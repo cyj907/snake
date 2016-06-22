@@ -1,5 +1,6 @@
 from Const import *
 from Snake import *
+from Apple import *
 
 
 
@@ -20,6 +21,7 @@ t0 = clock.tick()
 
 
 snake_zhs = Snake(pygame,screen)
+apple_public = Apple(pygame,screen)
 
 direction =None
 applePos=None
@@ -44,6 +46,7 @@ while True:
                 direction =None
             
     time_passed = clock.tick(30)
-    snake_zhs.ForJade(time_passed,applePos,direction)
+    (snake_dead,apple_eaten)=snake_zhs.ForJade(time_passed,applePos,direction)
+    apple_public.SetApple(apple_eaten)
     pygame.display.update()
     

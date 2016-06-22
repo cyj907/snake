@@ -11,6 +11,7 @@ INIT_V = 1
 INIT_DIRECT = 3
 INIT_POS = [10,50,200,50]    #pos定义方式，首末两点的坐标
 SNAKE_COLOR=(0,255,100) #我喜欢荧光绿的蛇
+    
 
 class Snake:
     def __init__(self,pygame,screen):
