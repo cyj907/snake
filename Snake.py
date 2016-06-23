@@ -260,23 +260,7 @@ class Snake:
         return RectIntersect(self.additionRect,
                              (self.applePos[0],self.applePos[1],self.applePos[0]+APPLE_WIDTH-1,self.applePos[1]+APPLE_HEIGHT-1))
 
-<<<<<<< HEAD
-=======
-    # get the top left and bottom right position of the rectangle
-    def __RectMod(self, id):
-        rect = self.snakePoss[id]
-        if self._ToUp(id):
-            rect2 = [rect[2]-SNAKE_WITH_HALH, rect[3], rect[0]+SNAKE_WITH_HALH, rect[1]]
-        elif self._ToDown(id):
-            rect2 = [rect[0]-SNAKE_WITH_HALH, rect[1], rect[2]+SNAKE_WITH_HALH, rect[3]]
-        elif self._ToLeft(id):
-            rect2 = [rect[2], rect[3]-SNAKE_WITH_HALH, rect[0], rect[1]+SNAKE_WITH_HALH]
-        else:
-            rect2 = [rect[0], rect[2]-SNAKE_WITH_HALH, rect[2], rect[3]+SNAKE_WITH_HALH]
-        return rect2
 
-    # determine whether the snake is dead
->>>>>>> bbc75f918d681be7b6d977162b989aeebf334fae
     def _IsDead(self):
         headRect = self.snakePoss[-1]
 
@@ -305,6 +289,11 @@ class Snake:
         #d：表示蛇的新运动方向
     #返回一个tuple(r1,r2),r1=true,表示撞死了，r2=true表示吃到苹果了
     def ForJade(self,pass_time,pos=None,d=None):
+        if self.dead:
+            self._UpdateRects()
+            self._DrawSnake()
+            return (True,False)
+
         # print self.myRects
         # print '------------------------------------------------------'
         # for l in self.snakePoss:

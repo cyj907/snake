@@ -15,7 +15,6 @@ class Top:
         pvsc = pygame.image.load('NewGame.png').convert()
         quitPic = pygame.image.load('Quit.png').convert()
 
-<<<<<<< HEAD
         self.menu = Menu(pygame,screen,SCREEN_WITH,SCREEN_HEIGHT,[pvsc,p1vsp2,quitPic],['pvsc','p1vsp2','quit'])
 
         direction = None
@@ -68,11 +67,10 @@ class Top:
             pass
         else:
             print "error in Top Update"
-=======
 def GameOver(game, scrn):
     #gameOverPic = game.image.load('game-over.gif').convert_alpha()
     #scrn.blit(gameOverPic, (0,0))
->>>>>>> bbc75f918d681be7b6d977162b989aeebf334fae
+    pass
 
 
 
@@ -100,38 +98,9 @@ while True:
             exit()
         elif event.type == KEYDOWN:
             key = event.key
-<<<<<<< HEAD
         elif event.type == pygame.MOUSEBUTTONDOWN:
             mousePos = pygame.mouse.get_pos()
 
     top.Update(clock.tick(30),key,mousePos)
-
-=======
-            if key == K_UP :
-                direction=0
-            elif key == K_DOWN:
-                direction=1
-            elif key == K_LEFT:
-                direction=2
-            elif key == K_RIGHT :
-                direction=3
-            else:
-                direction =None
-    d_t=time.time()-t_start
-    time_passed = clock.tick(30)
-    (snake_dead,apple_eaten)=snake_zhs.ForJade(time_passed,apple_public.SetApple(apple_eaten),direction)
-    #if snake_dead:
-    #    GameOver(pygame, screen)
-
-    if apple_eaten:
-        score+=10
-    screen.blit(test.render(str(score),1,(255,255,255)), (0, 0))
-
-    d_t=max(d_t,1)
-    tmp_s=int(100*score/d_t)
-    best_s=max(best_s,tmp_s)
-    screen.blit(test.render(str(tmp_s),1,(255,255,255)), (0, 20))
-    screen.blit(test.render("best score : "+str(best_s),1,(255,255,255)), (0, 40))
->>>>>>> bbc75f918d681be7b6d977162b989aeebf334fae
     pygame.display.update()
     
