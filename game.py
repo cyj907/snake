@@ -24,8 +24,7 @@ snake_zhs = Snake(pygame,screen)
 apple_public = Apple(pygame,screen)
 
 direction =None
-applePos=None
-apple_eaten = True;
+apple_eaten = True
 
 while True:
     screen.fill((0,0,0))
