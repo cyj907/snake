@@ -81,13 +81,13 @@ class Snake:
 ##            else:
 ##                print "error in _UpdateRects"
             if self._ToLeft(i):
-                self.myRects.append(Rect(pos[2],pos[3]-SNAKE_WITH_HALH,pos[0]-pos[2]+1,pos[1]+SNAKE_WITH_HALH-(pos[3]-SNAKE_WITH_HALH)+1))
+                self.myRects.append((pos[2] , pos[3]-SNAKE_WITH_HALH , pos[0]-pos[2]+1 , pos[1]+SNAKE_WITH_HALH-(pos[3]-SNAKE_WITH_HALH)+1))
             elif self._ToRight(i):
-                self.myRects.append(Rect(pos[0],pos[1]-SNAKE_WITH_HALH,pos[2]-pos[0]+1,pos[3]+SNAKE_WITH_HALH-(pos[1]-SNAKE_WITH_HALH)+1))
+                self.myRects.append((pos[0] , pos[1]-SNAKE_WITH_HALH , pos[2]-pos[0]+1 , pos[3]+SNAKE_WITH_HALH-(pos[1]-SNAKE_WITH_HALH)+1))
             elif self._ToUp(i):
-                self.myRects.append(Rect(pos[2]-SNAKE_WITH_HALH,pos[3],pos[0]+SNAKE_WITH_HALH-(pos[2]-SNAKE_WITH_HALH)+1,pos[1]-pos[3]+1))
+                self.myRects.append((pos[2]-SNAKE_WITH_HALH , pos[3] , pos[0]+SNAKE_WITH_HALH-(pos[2]-SNAKE_WITH_HALH)+1 , pos[1]-pos[3]+1))
             elif self._ToDown(i):
-                self.myRects.append(Rect(pos[0]-SNAKE_WITH_HALH,pos[1],pos[2]+SNAKE_WITH_HALH-(pos[0]-SNAKE_WITH_HALH)+1,pos[3]-pos[1]+1))
+                self.myRects.append((pos[0]-SNAKE_WITH_HALH , pos[1] , pos[2]+SNAKE_WITH_HALH-(pos[0]-SNAKE_WITH_HALH)+1 , pos[3]-pos[1]+1))
             else:
                 print "error in _UpdateRects"
 
@@ -165,29 +165,7 @@ class Snake:
                     decDist-=(self.snakePoss[0][3]-self.snakePoss[0][1])
             else:
                 print "error in _UpdateRects"
-            
-##            for direct0,direct1,diff0,diff1 in [(0,2,1,3),(1,3,0,2)]:
-##                if self.snakePoss[0][direct0]==self.snakePoss[0][direct1]:
-##                    if self.snakePoss[0][diff0]>self.snakePoss[0][diff1]:
-##                        if self.snakePoss[0][diff0]-self.snakePoss[0][diff1]>=moveDist:
-##                            self.snakePoss[0][diff0]-=moveDist
-##                            return
-##                        elif self.snakePoss[0][diff0]-self.snakePoss[0][diff1]==moveDist:
-##                            self.snakePoss.pop(0)
-##                            return
-##                        else:
-##                            moveDist-=(self.snakePoss[0][diff0]-self.snakePoss[0][diff1])
-##                            self.snakePoss.pop(0)
-##                    else:
-##                        if self.snakePoss[0][diff1]-self.snakePoss[0][diff0]>=moveDist:
-##                            self.snakePoss[0][diff0]+=moveDist
-##                            return
-##                        elif self.snakePoss[0][diff1]-self.snakePoss[0][diff0]==moveDist:
-##                            self.snakePoss.pop(0)
-##                            return
-##                        else:
-##                            moveDist-=(self.snakePoss[0][diff1]-self.snakePoss[0][diff0])
-##                            self.snakePoss.pop(0)
+
             
                             
     #返回值True表示撞死了
@@ -265,7 +243,9 @@ class Snake:
     #返回一个tuple(r1,r2),r1=true,表示撞死了，r2=true表示吃到苹果了
     def ForJade(self,pass_time,pos=None,d=None):
         self._DrawSnake()
-        
+        # self.pygame.draw.rect(self.screen, SNAKE_COLOR, (100,100,2,2))
+        # for l in self.snakePoss:
+        #     self.pygame.draw.line(self.screen,SNAKE_COLOR,(l[0],l[1]),(l[2],l[3]),1)
         if d!=None and (d==0 or d==1 or d==2 or d==3):
             self._SetDirection(d)
         if pos!=None:
