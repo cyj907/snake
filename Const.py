@@ -6,8 +6,8 @@ from pygame.locals import *
 import time
 
 
-APPLE_COLOR=(255,0,0) #¹ÃÇÒÓÃºìÉ«µÄ°É
-SNAKE_COLOR=(0,255,100) #ÎÒÏ²»¶Ó«¹âÂÌµÄÉß
+APPLE_COLOR=(255,0,0) #ï¿½ï¿½ï¿½ï¿½ï¿½Ãºï¿½É«ï¿½Ä°ï¿½
+SNAKE_COLOR=(0,255,100) #ï¿½ï¿½Ï²ï¿½ï¿½Ó«ï¿½ï¿½ï¿½Ìµï¿½ï¿½ï¿½
 
 SCREEN_WITH=500
 SCREEN_HEIGHT=500
@@ -26,3 +26,4 @@ def RectIntersect(rect1,rect2):
         return True
     else:
         return False
+

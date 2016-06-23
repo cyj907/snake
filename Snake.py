@@ -9,8 +9,8 @@ from Const import *
 INIT_V = 1
 INIT_DIRECT = 3
 INIT_POS = [10,50,200,50]    #pos定义方式，首末两点的坐标
-INIT_A = 0.5 #加速度
-    
+INIT_A = 0 #加速度
+
 
 class Snake:
     def __init__(self,pygame,screen):
@@ -87,7 +87,7 @@ class Snake:
             elif self._ToRight(i):
                 self.myRects.append((pos[0] , pos[1]-SNAKE_WITH_HALH , pos[2]-pos[0]+1 , 2*SNAKE_WITH_HALH+1))
             elif self._ToUp(i):
-                self.myRects.append((pos[2]-SNAKE_WITH_HALH , pos[3] , 2*SNAKE_WITH_HALH+1 , pos[1]-pos[3]+1))
+                self.myRects.append((pos[2]-SNAKE_WITH_HALH , pos[3] , 2*SNAKE_WITH_HALH+1, pos[1]-pos[3]+1))
             elif self._ToDown(i):
                 self.myRects.append((pos[0]-SNAKE_WITH_HALH , pos[1] , 2*SNAKE_WITH_HALH+1 , pos[3]-pos[1]+1))
             else:
@@ -120,52 +120,52 @@ class Snake:
     def _Decrese(self,decDist):
         while 1:
             if self._ToLeft(0):
-                if self.snakePoss[0][0]-self.snakePoss[0][2]>decDist:
+                if self.snakePoss[0][0]-self.snakePoss[0][2]+1>decDist:
                     self.snakePoss[0][0]-=decDist
-                    length = self.snakePoss[0][0]-self.snakePoss[0][2]
+                    length = self.snakePoss[0][0]-self.snakePoss[0][2]+1
                     self.__DeleteTail(length)
                     return
-                elif self.snakePoss[0][0]-self.snakePoss[0][2]==decDist:
+                elif self.snakePoss[0][0]-self.snakePoss[0][2]+1==decDist:
                     self.snakePoss.pop(0)
                     return
                 else:
-                    decDist-=(self.snakePoss[0][0]-self.snakePoss[0][2])
+                    decDist-=(self.snakePoss[0][0]-self.snakePoss[0][2]+1)
                     self.snakePoss.pop(0)
             elif self._ToRight(0):
-                if self.snakePoss[0][2]-self.snakePoss[0][0]>decDist:
+                if self.snakePoss[0][2]-self.snakePoss[0][0]+1>decDist:
                     self.snakePoss[0][0]+=decDist
-                    length = self.snakePoss[0][2]-self.snakePoss[0][0]
+                    length = self.snakePoss[0][2]-self.snakePoss[0][0]+1
                     self.__DeleteTail(length)
                     return
-                elif self.snakePoss[0][2]-self.snakePoss[0][0]==decDist:
+                elif self.snakePoss[0][2]-self.snakePoss[0][0]+1==decDist:
                     self.snakePoss.pop(0)
                     return
                 else:
-                    decDist-=(self.snakePoss[0][2]-self.snakePoss[0][0])
+                    decDist-=(self.snakePoss[0][2]-self.snakePoss[0][0]+1)
                     self.snakePoss.pop(0)
             elif self._ToUp(0):
-                if self.snakePoss[0][1]-self.snakePoss[0][3]>decDist:
+                if self.snakePoss[0][1]-self.snakePoss[0][3]+1>decDist:
                     self.snakePoss[0][1]-=decDist
-                    length = self.snakePoss[0][1]-self.snakePoss[0][3]
+                    length = self.snakePoss[0][1]-self.snakePoss[0][3]+1
                     self.__DeleteTail(length)
                     return
-                elif self.snakePoss[0][1]-self.snakePoss[0][3]==decDist:
+                elif self.snakePoss[0][1]-self.snakePoss[0][3]+1==decDist:
                     self.snakePoss.pop(0)
                     return
                 else:
-                    decDist-=(self.snakePoss[0][1]-self.snakePoss[0][3])
+                    decDist-=(self.snakePoss[0][1]-self.snakePoss[0][3]+1)
                     self.snakePoss.pop(0)
             elif self._ToDown(0):
-                if self.snakePoss[0][3]-self.snakePoss[0][1]>decDist:
+                if self.snakePoss[0][3]-self.snakePoss[0][1]+1>decDist:
                     self.snakePoss[0][1]+=decDist
-                    length = self.snakePoss[0][3]-self.snakePoss[0][1]
+                    length = self.snakePoss[0][3]-self.snakePoss[0][1]+1
                     self.__DeleteTail(length)
                     return
-                elif self.snakePoss[0][3]-self.snakePoss[0][1]==decDist:
+                elif self.snakePoss[0][3]-self.snakePoss[0][1]+1==decDist:
                     self.snakePoss.pop(0)
                     return
                 else:
-                    decDist-=(self.snakePoss[0][3]-self.snakePoss[0][1])
+                    decDist-=(self.snakePoss[0][3]-self.snakePoss[0][1]+1)
                     self.snakePoss.pop(0)
             else:
                 print "error in _UpdateRects"
@@ -246,6 +246,44 @@ class Snake:
         return RectIntersect(self.additionRect,
                              (self.applePos[0],self.applePos[1],self.applePos[0]+APPLE_WIDTH-1,self.applePos[1]+APPLE_HEIGHT-1))
 
+    def __RectMod(self, id):
+        rect = self.snakePoss[id]
+        if self._ToUp(id):
+            rect2 = [rect[2]-SNAKE_WITH_HALH, rect[3], rect[0]+SNAKE_WITH_HALH, rect[1]]
+        elif self._ToDown(id):
+            rect2 = [rect[0]-SNAKE_WITH_HALH, rect[1], rect[2]+SNAKE_WITH_HALH, rect[3]]
+        elif self._ToLeft(id):
+            rect2 = [rect[2], rect[3]-SNAKE_WITH_HALH, rect[0], rect[1]+SNAKE_WITH_HALH]
+        else:
+            rect2 = [rect[0], rect[2]-SNAKE_WITH_HALH, rect[2], rect[3]+SNAKE_WITH_HALH]
+        return rect2
+
+    def _IsDead(self):
+        headRect = self.snakePoss[-1]
+
+        # hit wall
+        if self._ToUp(-1) and headRect[3] == 0:
+            return True
+        elif self._ToDown(-1) and headRect[3] == SCREEN_HEIGHT:
+            return True
+        elif self._ToLeft(-1) and headRect[2] == 0:
+            return True
+        elif self._ToRight(-1) and headRect[2] == SCREEN_WITH:
+            return True
+
+        # hit tail
+        headPos = self.__RectMod(-1)
+
+        for i in range(len(self.snakePoss) - 1):
+            tailPos = self.__RectMod(i)
+            print("head", headPos)
+            print("tail", tailPos)
+            if RectIntersect(headPos, tailPos):
+                return True
+
+        return False
+
+
 
     #输入：
         #pass_time：表示相邻相邻帧之间的时间间隔
@@ -269,4 +307,4 @@ class Snake:
         if self.applePos!=None:
             self.eatApple = self._EatApple()
         self.v += self.eatApple * INIT_A
-        return (False,self.eatApple)
+        return (self._IsDead(),self.eatApple)
