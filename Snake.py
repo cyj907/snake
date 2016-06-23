@@ -262,13 +262,13 @@ class Snake:
         headRect = self.snakePoss[-1]
 
         # hit wall
-        if self._ToUp(-1) and headRect[3] == 0:
+        if self._ToUp(-1) and headRect[3] <= 0:
             return True
-        elif self._ToDown(-1) and headRect[3] == SCREEN_HEIGHT:
+        elif self._ToDown(-1) and headRect[3] >= SCREEN_HEIGHT:
             return True
-        elif self._ToLeft(-1) and headRect[2] == 0:
+        elif self._ToLeft(-1) and headRect[2] <= 0:
             return True
-        elif self._ToRight(-1) and headRect[2] == SCREEN_WITH:
+        elif self._ToRight(-1) and headRect[2] >= SCREEN_WITH:
             return True
 
         # hit tail
@@ -276,8 +276,6 @@ class Snake:
 
         for i in range(len(self.snakePoss) - 1):
             tailPos = self.__RectMod(i)
-            print("head", headPos)
-            print("tail", tailPos)
             if RectIntersect(headPos, tailPos):
                 return True
 
@@ -307,4 +305,6 @@ class Snake:
         if self.applePos!=None:
             self.eatApple = self._EatApple()
         self.v += self.eatApple * INIT_A
-        return (self._IsDead(),self.eatApple)
+
+        dead = self._IsDead()
+        return (dead,self.eatApple)
