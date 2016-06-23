@@ -9,7 +9,7 @@ from Const import *
 INIT_V = 1
 INIT_DIRECT = 3
 INIT_POS = [10,50,200,50]    #pos定义方式，首末两点的坐标
-INIT_A = 0.4 #加速度
+INIT_A = 0 #加速度
     
 
 class Snake:
@@ -173,7 +173,7 @@ class Snake:
             
                             
     def _SankeGo(self,pass_time):
-        moveDist = pass_time*self.v/10.0
+        moveDist = int(pass_time*self.v/10.0)
         if self.dirChange:
             if self.direction==0:
                 if self._ToLeft(-1):
@@ -246,8 +246,44 @@ class Snake:
         return RectIntersect(self.additionRect,
                              (self.applePos[0],self.applePos[1],self.applePos[0]+APPLE_WIDTH-1,self.applePos[1]+APPLE_HEIGHT-1))
 
+    def __RectMod(self, id):
+        rect = self.snakePoss[id]
+        if self._ToUp(id):
+            rect2 = [rect[2]-SNAKE_WITH_HALH, rect[3], rect[0]+SNAKE_WITH_HALH, rect[1]]
+        elif self._ToDown(id):
+            rect2 = [rect[0]-SNAKE_WITH_HALH, rect[1], rect[2]+SNAKE_WITH_HALH, rect[3]]
+        elif self._ToLeft(id):
+            rect2 = [rect[2], rect[3]-SNAKE_WITH_HALH, rect[0], rect[1]+SNAKE_WITH_HALH]
+        else:
+            rect2 = [rect[0], rect[2]-SNAKE_WITH_HALH, rect[2], rect[3]+SNAKE_WITH_HALH]
+        return rect2
+
     def _IsDead(self):
-        
+        headRect = self.snakePoss[-1]
+
+        # hit wall
+        if self._ToUp(-1) and headRect[3] == 0:
+            return True
+        elif self._ToDown(-1) and headRect[3] == SCREEN_HEIGHT:
+            return True
+        elif self._ToLeft(-1) and headRect[2] == 0:
+            return True
+        elif self._ToRight(-1) and headRect[2] == SCREEN_WITH:
+            return True
+
+        # hit tail
+        headPos = self.__RectMod(-1)
+
+        for i in range(len(self.snakePoss) - 1):
+            tailPos = self.__RectMod(i)
+            print("head", headPos)
+            print("tail", tailPos)
+            if RectIntersect(headPos, tailPos):
+                return True
+
+        return False
+
+
 
     #输入：
         #pass_time：表示相邻相邻帧之间的时间间隔
