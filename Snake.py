@@ -6,7 +6,7 @@
 from Const import *
 
 
-INIT_V = 3
+INIT_V = 1
 INIT_DIRECT = 3
 INIT_POS = [10,50,200,50]    #pos定义方式，首末两点的坐标
 INIT_RECT = [INIT_POS[0], INIT_POS[1]-SNAKE_WITH_HALH, INIT_POS[2], INIT_POS[3]+SNAKE_WITH_HALH]
@@ -86,7 +86,7 @@ class Snake:
             elif self._ToRight(i):
                 self.myRects.append((pos[0] , pos[1]-SNAKE_WITH_HALH , pos[2]-pos[0]+1 , 2*SNAKE_WITH_HALH+1))
             elif self._ToUp(i):
-                self.myRects.append((pos[2]-SNAKE_WITH_HALH , pos[3] , 2*SNAKE_WITH_HALH+1 , pos[1]-pos[3]+1))
+                self.myRects.append((pos[2]-SNAKE_WITH_HALH , pos[3] , 2*SNAKE_WITH_HALH+1, pos[1]-pos[3]+1))
             elif self._ToDown(i):
                 self.myRects.append((pos[0]-SNAKE_WITH_HALH , pos[1] , 2*SNAKE_WITH_HALH+1 , pos[3]-pos[1]+1))
             else:
@@ -120,53 +120,53 @@ class Snake:
     def _Decrese(self,decDist):
         while 1:
             if self._ToLeft(0):
-                if self.snakePoss[0][0]-self.snakePoss[0][2]>decDist:
+                if self.snakePoss[0][0]-self.snakePoss[0][2]+1>decDist:
                     self.snakePoss[0][0]-=decDist
-                    length = self.snakePoss[0][0]-self.snakePoss[0][2]
+                    length = self.snakePoss[0][0]-self.snakePoss[0][2]+1
                     self.__DeleteTail(length)
                     return
-                elif self.snakePoss[0][0]-self.snakePoss[0][2]==decDist:
+                elif self.snakePoss[0][0]-self.snakePoss[0][2]+1==decDist:
                     self.snakePoss.pop(0)
                     return
                 else:
+                    decDist-=(self.snakePoss[0][0]-self.snakePoss[0][2]+1)
                     self.snakePoss.pop(0)
-                    decDist-=(self.snakePoss[0][0]-self.snakePoss[0][2])
             elif self._ToRight(0):
-                if self.snakePoss[0][2]-self.snakePoss[0][0]>decDist:
+                if self.snakePoss[0][2]-self.snakePoss[0][0]+1>decDist:
                     self.snakePoss[0][0]+=decDist
-                    length = self.snakePoss[0][2]-self.snakePoss[0][0]
+                    length = self.snakePoss[0][2]-self.snakePoss[0][0]+1
                     self.__DeleteTail(length)
                     return
-                elif self.snakePoss[0][2]-self.snakePoss[0][0]==decDist:
+                elif self.snakePoss[0][2]-self.snakePoss[0][0]+1==decDist:
                     self.snakePoss.pop(0)
                     return
                 else:
+                    decDist-=(self.snakePoss[0][2]-self.snakePoss[0][0]+1)
                     self.snakePoss.pop(0)
-                    decDist-=(self.snakePoss[0][2]-self.snakePoss[0][0])
             elif self._ToUp(0):
-                if self.snakePoss[0][1]-self.snakePoss[0][3]>decDist:
+                if self.snakePoss[0][1]-self.snakePoss[0][3]+1>decDist:
                     self.snakePoss[0][1]-=decDist
-                    length = self.snakePoss[0][1]-self.snakePoss[0][3]
+                    length = self.snakePoss[0][1]-self.snakePoss[0][3]+1
                     self.__DeleteTail(length)
                     return
-                elif self.snakePoss[0][1]-self.snakePoss[0][3]==decDist:
+                elif self.snakePoss[0][1]-self.snakePoss[0][3]+1==decDist:
                     self.snakePoss.pop(0)
                     return
                 else:
+                    decDist-=(self.snakePoss[0][1]-self.snakePoss[0][3]+1)
                     self.snakePoss.pop(0)
-                    decDist-=(self.snakePoss[0][1]-self.snakePoss[0][3])
             elif self._ToDown(0):
-                if self.snakePoss[0][3]-self.snakePoss[0][1]>decDist:
+                if self.snakePoss[0][3]-self.snakePoss[0][1]+1>decDist:
                     self.snakePoss[0][1]+=decDist
-                    length = self.snakePoss[0][3]-self.snakePoss[0][1]
+                    length = self.snakePoss[0][3]-self.snakePoss[0][1]+1
                     self.__DeleteTail(length)
                     return
-                elif self.snakePoss[0][3]-self.snakePoss[0][1]==decDist:
+                elif self.snakePoss[0][3]-self.snakePoss[0][1]+1==decDist:
                     self.snakePoss.pop(0)
                     return
                 else:
+                    decDist-=(self.snakePoss[0][3]-self.snakePoss[0][1]+1)
                     self.snakePoss.pop(0)
-                    decDist-=(self.snakePoss[0][3]-self.snakePoss[0][1])
             else:
                 print "error in _UpdateRects"
 
@@ -247,10 +247,10 @@ class Snake:
         #d：表示蛇的新运动方向
     #返回一个tuple(r1,r2),r1=true,表示撞死了，r2=true表示吃到苹果了
     def ForJade(self,pass_time,pos=None,d=None):
-        self._DrawSnake()
-        # self.pygame.draw.rect(self.screen, SNAKE_COLOR, (100,100,2,2))
-        # for l in self.snakePoss:
-        #     self.pygame.draw.line(self.screen,SNAKE_COLOR,(l[0],l[1]),(l[2],l[3]),1)
+        #self._DrawSnake()
+        self.pygame.draw.rect(self.screen, SNAKE_COLOR, (100,100,2,2))
+        for l in self.snakePoss:
+            self.pygame.draw.line(self.screen,SNAKE_COLOR,(l[0],l[1]),(l[2],l[3]),1)
         if d!=None and (d==0 or d==1 or d==2 or d==3):
             self._SetDirection(d)
         if pos!=None:

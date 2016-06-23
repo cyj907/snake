@@ -5,8 +5,8 @@ from sys import exit
 from pygame.locals import *
 
 
-APPLE_COLOR=(255,0,0) #¹ÃÇÒÓÃºìÉ«µÄ°É
-SNAKE_COLOR=(0,255,100) #ÎÒÏ²»¶Ó«¹âÂÌµÄÉß
+APPLE_COLOR=(255,0,0) #ï¿½ï¿½ï¿½ï¿½ï¿½Ãºï¿½É«ï¿½Ä°ï¿½
+SNAKE_COLOR=(0,255,100) #ï¿½ï¿½Ï²ï¿½ï¿½Ó«ï¿½ï¿½ï¿½Ìµï¿½ï¿½ï¿½
 
 SCREEN_WITH=500
 SCREEN_HEIGHT=500
@@ -14,7 +14,7 @@ SCREEN_HEIGHT=500
 APPLE_WIDTH=20
 APPLE_HEIGHT=20
 
-SNAKE_WITH_HALH = 10
+SNAKE_WITH_HALH = 0
 
 def RectIntersect(rect1,rect2):
     left = max(rect1[0],rect2[0])
