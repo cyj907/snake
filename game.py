@@ -4,6 +4,9 @@ from Apple import *
 
 
 
+def GameOver(game, scrn):
+    #gameOverPic = game.image.load('game-over.gif').convert_alpha()
+    #scrn.blit(gameOverPic, (0,0))
 
 
 
@@ -48,6 +51,9 @@ while True:
     d_t=time.time()-t_start
     time_passed = clock.tick(30)
     (snake_dead,apple_eaten)=snake_zhs.ForJade(time_passed,apple_public.SetApple(apple_eaten),direction)
+    #if snake_dead:
+    #    GameOver(pygame, screen)
+
     if apple_eaten:
         score+=10
     screen.blit(test.render(str(score),1,(255,255,255)), (0, 0))

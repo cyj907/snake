@@ -246,6 +246,7 @@ class Snake:
         return RectIntersect(self.additionRect,
                              (self.applePos[0],self.applePos[1],self.applePos[0]+APPLE_WIDTH-1,self.applePos[1]+APPLE_HEIGHT-1))
 
+    # get the top left and bottom right position of the rectangle
     def __RectMod(self, id):
         rect = self.snakePoss[id]
         if self._ToUp(id):
@@ -258,6 +259,7 @@ class Snake:
             rect2 = [rect[0], rect[2]-SNAKE_WITH_HALH, rect[2], rect[3]+SNAKE_WITH_HALH]
         return rect2
 
+    # determine whether the snake is dead
     def _IsDead(self):
         headRect = self.snakePoss[-1]
 

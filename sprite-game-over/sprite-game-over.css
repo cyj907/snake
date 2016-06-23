@@ -1,0 +1,30 @@
+.frame { 
+ background-color: transparent;
+ background-image: url(sprite-game-over.png);
+ background-repeat: no-repeat;
+ width: 1024px;  }
+.frame-0 { background-position: 0 0; }
+.frame-1 { background-position: -2048px 0; } 
+.frame-2 { background-position: -3072px 0; } 
+.frame-3 { background-position: -4096px 0; } 
+.frame-4 { background-position: -5120px 0; } 
+.frame-5 { background-position: -6144px 0; } 
+.frame-6 { background-position: -7168px 0; } 
+.frame-7 { background-position: -8192px 0; } 
+.frame-8 { background-position: -9216px 0; } 
+.frame-9 { background-position: -10240px 0; } 
+.frame-10 { background-position: -11264px 0; } 
+.frame-11 { background-position: -12288px 0; } 
+.frame-12 { background-position: -13312px 0; } 
+.frame-13 { background-position: -14336px 0; } 
+.frame-14 { background-position: -15360px 0; } 
+.frame-15 { background-position: -16384px 0; } 
+.frame-16 { background-position: -17408px 0; } 
+.frame-17 { background-position: -18432px 0; } 
+.frame-18 { background-position: -19456px 0; } 
+.frame-19 { background-position: -20480px 0; } 
+.frame-20 { background-position: -21504px 0; } 
+.frame-21 { background-position: -22528px 0; } 
+.frame-22 { background-position: -23552px 0; } 
+.frame-23 { background-position: -24576px 0; } 
+
