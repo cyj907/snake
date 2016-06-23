@@ -13,18 +13,15 @@ screen = pygame.display.set_mode((SCREEN_WITH, SCREEN_HEIGHT), 0, 32)
 pygame.display.set_caption("Snake!")
 
 
-
-
-
-clock = pygame.time.Clock()
-t0 = clock.tick()
-
-
 snake_zhs = Snake(pygame,screen)
 apple_public = Apple(pygame,screen)
+test = pygame.font.Font(None,30)
+clock = pygame.time.Clock()
 
+t0 = clock.tick()
 direction =None
 apple_eaten = True
+score = 0
 
 while True:
     screen.fill((0,0,0))
@@ -47,5 +44,8 @@ while True:
             
     time_passed = clock.tick(30)
     (snake_dead,apple_eaten)=snake_zhs.ForJade(time_passed,apple_public.SetApple(apple_eaten),direction)
+    if apple_eaten:
+        score+=10
+    screen.blit(test.render(str(score),1,(255,255,255)), (0, 0))
     pygame.display.update()
     
