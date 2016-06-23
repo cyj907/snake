@@ -3,6 +3,7 @@
 import pygame
 from sys import exit
 from pygame.locals import *
+import time
 
 
 APPLE_COLOR=(255,0,0) #�����ú�ɫ�İ�

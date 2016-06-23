@@ -9,7 +9,7 @@ from Const import *
 INIT_V = 1
 INIT_DIRECT = 3
 INIT_POS = [10,50,200,50]    #pos定义方式，首末两点的坐标
-INIT_RECT = [INIT_POS[0], INIT_POS[1]-SNAKE_WITH_HALH, INIT_POS[2], INIT_POS[3]+SNAKE_WITH_HALH]
+INIT_A = 0.4 #加速度
     
 
 class Snake:
@@ -20,10 +20,11 @@ class Snake:
         self.dirChange = False
         self.v = INIT_V             #初始化的速度
         self.snakePoss=[INIT_POS]
-        self.color = SNAKE_COLOR
         self.applePos = None
         self.myRects = None
         self.additionRect = None
+        self.eatApple = False
+        self.addSnakeLength_Cache = 0
 
 
 
@@ -230,7 +231,14 @@ class Snake:
             else:
                 self.snakePoss[-1][2]+=moveDist
 
-        self._Decrese(moveDist)
+        moveDist-=self.addSnakeLength_Cache
+        self.addSnakeLength_Cache=0
+        if self.eatApple:
+            moveDist-=APPLE_WIDTH
+        if moveDist>0:
+            self._Decrese(moveDist)
+        else:
+            self.addSnakeLength_Cache = -moveDist
                             
             
         
@@ -247,16 +255,17 @@ class Snake:
         #d：表示蛇的新运动方向
     #返回一个tuple(r1,r2),r1=true,表示撞死了，r2=true表示吃到苹果了
     def ForJade(self,pass_time,pos=None,d=None):
-        #self._DrawSnake()
-        self.pygame.draw.rect(self.screen, SNAKE_COLOR, (100,100,2,2))
-        for l in self.snakePoss:
-            self.pygame.draw.line(self.screen,SNAKE_COLOR,(l[0],l[1]),(l[2],l[3]),1)
+        self._DrawSnake()
+        # for l in self.snakePoss:
+        #     self.pygame.draw.line(self.screen,SNAKE_COLOR,(l[0],l[1]),(l[2],l[3]),1)
         if d!=None and (d==0 or d==1 or d==2 or d==3):
             self._SetDirection(d)
         if pos!=None:
             self._SetApplePos(pos)
-        
+
+
+        self.eatApple = False
         if self.applePos!=None:
-            return (self._SankeGo(pass_time),self._EatApple())
-        else:
-            return (self._SankeGo(pass_time),False)
+            self.eatApple = self._EatApple()
+        self.v += self.eatApple * INIT_A
+        return (self._SankeGo(pass_time),self.eatApple)
