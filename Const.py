@@ -14,7 +14,7 @@ SCREEN_HEIGHT=500
 APPLE_WIDTH=20
 APPLE_HEIGHT=20
 
-SNAKE_WITH_HALH = 0
+SNAKE_WITH_HALH = 10
 
 def RectIntersect(rect1,rect2):
     left = max(rect1[0],rect2[0])
