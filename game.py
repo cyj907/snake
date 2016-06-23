@@ -68,7 +68,6 @@ class Top:
             else:
                 direction = self.direction
             self.direction = direction
-
             d_t = time.time() - self.t_start
             (snake_dead, self.apple_eaten) = self.snake.ForJade(time_passed, self.apple.SetApple(self.apple_eaten), direction)
 
@@ -121,4 +120,5 @@ while True:
 
     top.Update(clock.tick(30),key,mousePos)
     pygame.display.update()
+
 
