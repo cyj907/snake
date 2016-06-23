@@ -9,7 +9,7 @@ from Const import *
 INIT_V = 1
 INIT_DIRECT = 3
 INIT_POS = [10,50,200,50]    #pos定义方式，首末两点的坐标
-INIT_A = 0.4 #加速度
+INIT_A = 0.5 #加速度
     
 
 class Snake:
@@ -171,51 +171,51 @@ class Snake:
                 print "error in _UpdateRects"
 
             
-                            
+
     def _SankeGo(self,pass_time):
-        moveDist = pass_time*self.v/10.0
+        moveDist = int(pass_time*self.v/10.0)
         if self.dirChange:
             if self.direction==0:
                 if self._ToLeft(-1):
                     self.snakePoss.append([self.snakePoss[-1][2]+SNAKE_WITH_HALH,
-                                          self.snakePoss[-1][3]-SNAKE_WITH_HALH,
+                                          self.snakePoss[-1][3]-SNAKE_WITH_HALH-1,
                                           self.snakePoss[-1][2]+SNAKE_WITH_HALH,
                                           self.snakePoss[-1][3]-SNAKE_WITH_HALH-moveDist])
                 else :
                     self.snakePoss.append([self.snakePoss[-1][2]-SNAKE_WITH_HALH,
-                                          self.snakePoss[-1][3]-SNAKE_WITH_HALH,
+                                          self.snakePoss[-1][3]-SNAKE_WITH_HALH-1,
                                           self.snakePoss[-1][2]-SNAKE_WITH_HALH,
                                           self.snakePoss[-1][3]-SNAKE_WITH_HALH-moveDist])
             elif self.direction==1:
                 if self._ToLeft(-1):
                     self.snakePoss.append([self.snakePoss[-1][2]+SNAKE_WITH_HALH,
-                                          self.snakePoss[-1][3]+SNAKE_WITH_HALH,
+                                          self.snakePoss[-1][3]+SNAKE_WITH_HALH+1,
                                           self.snakePoss[-1][2]+SNAKE_WITH_HALH,
                                           self.snakePoss[-1][3]+SNAKE_WITH_HALH+moveDist])
                 else :
                     self.snakePoss.append([self.snakePoss[-1][2]-SNAKE_WITH_HALH,
-                                          self.snakePoss[-1][3]+SNAKE_WITH_HALH,
+                                          self.snakePoss[-1][3]+SNAKE_WITH_HALH+1,
                                           self.snakePoss[-1][2]-SNAKE_WITH_HALH,
                                           self.snakePoss[-1][3]+SNAKE_WITH_HALH+moveDist])
             elif self.direction==2:
                 if self._ToUp(-1):
-                    self.snakePoss.append([self.snakePoss[-1][2]-SNAKE_WITH_HALH,
+                    self.snakePoss.append([self.snakePoss[-1][2]-SNAKE_WITH_HALH-1,
                                           self.snakePoss[-1][3]+SNAKE_WITH_HALH,
                                           self.snakePoss[-1][2]-SNAKE_WITH_HALH-moveDist,
                                           self.snakePoss[-1][3]+SNAKE_WITH_HALH])
                 else :
-                    self.snakePoss.append([self.snakePoss[-1][2]-SNAKE_WITH_HALH,
+                    self.snakePoss.append([self.snakePoss[-1][2]-SNAKE_WITH_HALH-1,
                                           self.snakePoss[-1][3]-SNAKE_WITH_HALH,
                                           self.snakePoss[-1][2]-SNAKE_WITH_HALH-moveDist,
                                           self.snakePoss[-1][3]-SNAKE_WITH_HALH])
             else:
                 if self._ToUp(-1):
-                    self.snakePoss.append([self.snakePoss[-1][2]+SNAKE_WITH_HALH,
+                    self.snakePoss.append([self.snakePoss[-1][2]+SNAKE_WITH_HALH+1,
                                           self.snakePoss[-1][3]+SNAKE_WITH_HALH,
                                           self.snakePoss[-1][2]+SNAKE_WITH_HALH+moveDist,
                                           self.snakePoss[-1][3]+SNAKE_WITH_HALH])
                 else :
-                    self.snakePoss.append([self.snakePoss[-1][2]+SNAKE_WITH_HALH,
+                    self.snakePoss.append([self.snakePoss[-1][2]+SNAKE_WITH_HALH+1,
                                           self.snakePoss[-1][3]-SNAKE_WITH_HALH,
                                           self.snakePoss[-1][2]+SNAKE_WITH_HALH+moveDist,
                                           self.snakePoss[-1][3]-SNAKE_WITH_HALH])
@@ -253,6 +253,8 @@ class Snake:
         #d：表示蛇的新运动方向
     #返回一个tuple(r1,r2),r1=true,表示撞死了，r2=true表示吃到苹果了
     def ForJade(self,pass_time,pos=None,d=None):
+        print self.myRects
+        print '------------------------------------------------------'
         # for l in self.snakePoss:
         #     self.pygame.draw.line(self.screen,SNAKE_COLOR,(l[0],l[1]),(l[2],l[3]),1)
         if d!=None and (d==0 or d==1 or d==2 or d==3):
