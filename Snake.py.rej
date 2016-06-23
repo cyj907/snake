@@ -1,0 +1,19 @@
+diff a/Snake.py b/Snake.py	(rejected hunks)
+@@ -81,13 +81,13 @@
+ ##            else:
+ ##                print "error in _UpdateRects"
+             if self._ToLeft(i):
+-                self.myRects.append(Rect(pos[2],pos[3]-SNAKE_WITH_HALH,pos[0]-pos[2]+1,pos[1]+SNAKE_WITH_HALH-(pos[3]-SNAKE_WITH_HALH)+1))
++                self.myRects.append((pos[2] , pos[3]-SNAKE_WITH_HALH , pos[0]-pos[2]+1 , pos[1]+SNAKE_WITH_HALH-(pos[3]-SNAKE_WITH_HALH)+1))
+             elif self._ToRight(i):
+-                self.myRects.append(Rect(pos[0],pos[1]-SNAKE_WITH_HALH,pos[2]-pos[0]+1,pos[3]+SNAKE_WITH_HALH-(pos[1]-SNAKE_WITH_HALH)+1))
++                self.myRects.append((pos[0] , pos[1]-SNAKE_WITH_HALH , pos[2]-pos[0]+1 , pos[3]+SNAKE_WITH_HALH-(pos[1]-SNAKE_WITH_HALH)+1))
+             elif self._ToUp(i):
+-                self.myRects.append(Rect(pos[2]-SNAKE_WITH_HALH,pos[3],pos[0]+SNAKE_WITH_HALH-(pos[2]-SNAKE_WITH_HALH)+1,pos[1]-pos[3]+1))
++                self.myRects.append((pos[2]-SNAKE_WITH_HALH , pos[3] , pos[0]+SNAKE_WITH_HALH-(pos[2]-SNAKE_WITH_HALH)+1 , pos[1]-pos[3]+1))
+             elif self._ToDown(i):
+-                self.myRects.append(Rect(pos[0]-SNAKE_WITH_HALH,pos[1],pos[2]+SNAKE_WITH_HALH-(pos[0]-SNAKE_WITH_HALH)+1,pos[3]-pos[1]+1))
++                self.myRects.append((pos[0]-SNAKE_WITH_HALH , pos[1] , pos[2]+SNAKE_WITH_HALH-(pos[0]-SNAKE_WITH_HALH)+1 , pos[3]-pos[1]+1))
+             else:
+                 print "error in _UpdateRects"
+ 

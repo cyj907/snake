@@ -6,8 +6,6 @@
 from Const import *
 import random
 
-SNAKE_COLOR=(255,0,0) #¹ÃÇÒÓÃºìÉ«µÄ°É
-APPLE_RADIUS=10
 
 
 class Apple:
@@ -15,17 +13,18 @@ class Apple:
     def __init__(self,pygame,screen):
         self.pygame = pygame
         self.screen = screen
-        self.x=random.randint(APPLE_RADIUS,SCREEN_WITH-APPLE_RADIUS)
-        self.y=random.randint(APPLE_RADIUS,SCREEN_HEIGHT-APPLE_RADIUS)
+        self.x=None
+        self.y=None
         
 
     def _GetApplePos(self):
-        self.x=random.randint(APPLE_RADIUS,SCREEN_WITH-APPLE_RADIUS)
-        self.Y=random.randint(APPLE_RADIUS,SCREEN_HEIGHT-APPLE_RADIUS)
+        self.x=random.randint(0,SCREEN_WITH-APPLE_WIDTH+1)
+        self.y=random.randint(0,SCREEN_HEIGHT-APPLE_HEIGHT+1)
 
 
     def SetApple(self,eaten=False):
         if eaten:
             self._GetApplePos()
-        self.pygame.draw.circle(self.screen,SNAKE_COLOR,(self.x,self.y),APPLE_RADIUS)
+        self.pygame.draw.rect(self.screen,APPLE_COLOR,(self.x,self.y,APPLE_WIDTH,APPLE_HEIGHT))
+        return (self.x,self.y)
             

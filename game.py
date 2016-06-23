@@ -25,6 +25,7 @@ apple_public = Apple(pygame,screen)
 
 direction =None
 applePos=None
+apple_eaten = True;
 
 while True:
     screen.fill((0,0,0))
@@ -46,7 +47,6 @@ while True:
                 direction =None
             
     time_passed = clock.tick(30)
-    (snake_dead,apple_eaten)=snake_zhs.ForJade(time_passed,applePos,direction)
-    apple_public.SetApple(apple_eaten)
+    (snake_dead,apple_eaten)=snake_zhs.ForJade(time_passed,apple_public.SetApple(apple_eaten),direction)
     pygame.display.update()
     

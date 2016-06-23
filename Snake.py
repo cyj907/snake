@@ -6,11 +6,10 @@
 from Const import *
 
 
-SNAKE_WITH_HALH = 10
 INIT_V = 1
 INIT_DIRECT = 3
 INIT_POS = [10,50,200,50]    #pos定义方式，首末两点的坐标
-SNAKE_COLOR=(0,255,100) #我喜欢荧光绿的蛇
+INIT_RECT = [INIT_POS[0], INIT_POS[1]-SNAKE_WITH_HALH, INIT_POS[2], INIT_POS[3]+SNAKE_WITH_HALH]
     
 
 class Snake:
@@ -24,6 +23,7 @@ class Snake:
         self.color = SNAKE_COLOR
         self.applePos = None
         self.myRects = None
+        self.additionRect = INIT_RECT
 
 
 
@@ -81,13 +81,13 @@ class Snake:
 ##            else:
 ##                print "error in _UpdateRects"
             if self._ToLeft(i):
-                self.myRects.append((pos[2] , pos[3]-SNAKE_WITH_HALH , pos[0]-pos[2]+1 , pos[1]+SNAKE_WITH_HALH-(pos[3]-SNAKE_WITH_HALH)+1))
+                self.myRects.append(Rect(pos[2],pos[3]-SNAKE_WITH_HALH,pos[0]-pos[2]+1,2*SNAKE_WITH_HALH+1))
             elif self._ToRight(i):
-                self.myRects.append((pos[0] , pos[1]-SNAKE_WITH_HALH , pos[2]-pos[0]+1 , pos[3]+SNAKE_WITH_HALH-(pos[1]-SNAKE_WITH_HALH)+1))
+                self.myRects.append(Rect(pos[0],pos[1]-SNAKE_WITH_HALH,pos[2]-pos[0]+1,2*SNAKE_WITH_HALH+1))
             elif self._ToUp(i):
-                self.myRects.append((pos[2]-SNAKE_WITH_HALH , pos[3] , pos[0]+SNAKE_WITH_HALH-(pos[2]-SNAKE_WITH_HALH)+1 , pos[1]-pos[3]+1))
+                self.myRects.append(Rect(pos[2]-SNAKE_WITH_HALH,pos[3],2*SNAKE_WITH_HALH+1,pos[1]-pos[3]+1))
             elif self._ToDown(i):
-                self.myRects.append((pos[0]-SNAKE_WITH_HALH , pos[1] , pos[2]+SNAKE_WITH_HALH-(pos[0]-SNAKE_WITH_HALH)+1 , pos[3]-pos[1]+1))
+                self.myRects.append(Rect(pos[0]-SNAKE_WITH_HALH,pos[1],2*SNAKE_WITH_HALH+1,pos[3]-pos[1]+1))
             else:
                 print "error in _UpdateRects"
 
@@ -233,7 +233,8 @@ class Snake:
 
     #返回值False表示没吃到苹果
     def _EatApple(self):
-        return False
+        return RectIntersect(self.additionRect,
+                             (self.applePos[0],self.applePos[1],self.applePos[0]+APPLE_WIDTH-1,self.applePos[1]+APPLE_HEIGHT-1))
         
 
     #输入：
