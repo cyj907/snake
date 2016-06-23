@@ -19,14 +19,25 @@ class Snake:
         self.direction = INIT_DIRECT  #0-3 表示上下左右，初始化往上跑
         self.dirChange = False
         self.v = INIT_V             #初始化的速度
-        self.snakePoss=[INIT_POS]
+        self.snakePoss=[INIT_POS[:]]
         self.applePos = None
         self.myRects = None
         self.additionRect = None
         self.eatApple = False
         self.addSnakeLength_Cache = 0
+        self.dead = False
 
-
+    def Reset(self):
+        self.direction = INIT_DIRECT
+        self.dirChange = False
+        self.v = INIT_V
+        self.snakePoss = [INIT_POS[:]]
+        self.applePos = None
+        self.myRects = None
+        self.additionRect = None
+        self.eatApple = False
+        self.addSnakeLength_Cache = 0
+        self.dead = False
 
     def _ToLeft(self,index):
         return self.snakePoss[index][0]>self.snakePoss[index][2]
@@ -66,6 +77,21 @@ class Snake:
 
 
 
+    def __RectMod(self, id):
+        # rect = self.snakePoss[id]
+        # if self._ToUp(id):
+        #     rect2 = [rect[2]-SNAKE_WITH_HALH, rect[3], rect[0]+SNAKE_WITH_HALH, rect[1]]
+        # elif self._ToDown(id):
+        #     rect2 = [rect[0]-SNAKE_WITH_HALH, rect[1], rect[2]+SNAKE_WITH_HALH, rect[3]]
+        # elif self._ToLeft(id):
+        #     rect2 = [rect[2], rect[3]-SNAKE_WITH_HALH, rect[0], rect[1]+SNAKE_WITH_HALH]
+        # else:
+        #     rect2 = [rect[0], rect[2]-SNAKE_WITH_HALH, rect[2], rect[3]+SNAKE_WITH_HALH]
+        # return rect2
+        return (self.myRects[id][0], self.myRects[id][1],
+         self.myRects[id][0] + self.myRects[id][2] - 1,
+         self.myRects[id][1] + self.myRects[id][3] - 1)
+
 
     #根据蛇身体的坐标，得出身体的矩形
     def _UpdateRects(self):
@@ -92,9 +118,7 @@ class Snake:
                 self.myRects.append((pos[0]-SNAKE_WITH_HALH , pos[1] , 2*SNAKE_WITH_HALH+1 , pos[3]-pos[1]+1))
             else:
                 print "error in _UpdateRects"
-        self.additionRect = [self.myRects[-1][0], self.myRects[-1][1],
-                             self.myRects[-1][0]+self.myRects[-1][2]-1,
-                             self.myRects[-1][1]+self.myRects[-1][3]-1]
+        self.additionRect = self.__RectMod(-1)
 
     def _DrawSnake(self):
         for rect in self.myRects:
@@ -246,41 +270,25 @@ class Snake:
         return RectIntersect(self.additionRect,
                              (self.applePos[0],self.applePos[1],self.applePos[0]+APPLE_WIDTH-1,self.applePos[1]+APPLE_HEIGHT-1))
 
-    # get the top left and bottom right position of the rectangle
-    def __RectMod(self, id):
-        rect = self.snakePoss[id]
-        if self._ToUp(id):
-            rect2 = [rect[2]-SNAKE_WITH_HALH, rect[3], rect[0]+SNAKE_WITH_HALH, rect[1]]
-        elif self._ToDown(id):
-            rect2 = [rect[0]-SNAKE_WITH_HALH, rect[1], rect[2]+SNAKE_WITH_HALH, rect[3]]
-        elif self._ToLeft(id):
-            rect2 = [rect[2], rect[3]-SNAKE_WITH_HALH, rect[0], rect[1]+SNAKE_WITH_HALH]
-        else:
-            rect2 = [rect[0], rect[2]-SNAKE_WITH_HALH, rect[2], rect[3]+SNAKE_WITH_HALH]
-        return rect2
 
-    # determine whether the snake is dead
     def _IsDead(self):
         headRect = self.snakePoss[-1]
 
         # hit wall
-        if self._ToUp(-1) and headRect[3] <= 0:
+        if self._ToUp(-1) and headRect[3] < 0:
             return True
         elif self._ToDown(-1) and headRect[3] >= SCREEN_HEIGHT:
             return True
-        elif self._ToLeft(-1) and headRect[2] <= 0:
+        elif self._ToLeft(-1) and headRect[2] < 0:
             return True
         elif self._ToRight(-1) and headRect[2] >= SCREEN_WITH:
             return True
 
         # hit tail
-        headPos = self.__RectMod(-1)
 
         for i in range(len(self.snakePoss) - 1):
-            tailPos = self.__RectMod(i)
-            if RectIntersect(headPos, tailPos):
+            if RectIntersect(self.additionRect, self.__RectMod(i)):
                 return True
-
         return False
 
 
@@ -291,6 +299,11 @@ class Snake:
         #d：表示蛇的新运动方向
     #返回一个tuple(r1,r2),r1=true,表示撞死了，r2=true表示吃到苹果了
     def ForJade(self,pass_time,pos=None,d=None):
+        if self.dead:
+            self._UpdateRects()
+            self._DrawSnake()
+            return (True,False)
+
         # print self.myRects
         # print '------------------------------------------------------'
         # for l in self.snakePoss:
@@ -308,5 +321,10 @@ class Snake:
             self.eatApple = self._EatApple()
         self.v += self.eatApple * INIT_A
 
-        dead = self._IsDead()
-        return (dead,self.eatApple)
+        if self._IsDead():
+            self.dead = True
+            self.v = 0
+            return (True,self.eatApple)
+        else:
+            return (False,self.eatApple)
+
