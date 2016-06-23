@@ -26,4 +26,3 @@ def RectIntersect(rect1,rect2):
         return True
     else:
         return False
-

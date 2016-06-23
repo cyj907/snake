@@ -25,6 +25,7 @@ class Snake:
         self.additionRect = None
         self.eatApple = False
         self.addSnakeLength_Cache = 0
+        self.dead = False
 
 
 
@@ -66,6 +67,21 @@ class Snake:
 
 
 
+    def __RectMod(self, id):
+        # rect = self.snakePoss[id]
+        # if self._ToUp(id):
+        #     rect2 = [rect[2]-SNAKE_WITH_HALH, rect[3], rect[0]+SNAKE_WITH_HALH, rect[1]]
+        # elif self._ToDown(id):
+        #     rect2 = [rect[0]-SNAKE_WITH_HALH, rect[1], rect[2]+SNAKE_WITH_HALH, rect[3]]
+        # elif self._ToLeft(id):
+        #     rect2 = [rect[2], rect[3]-SNAKE_WITH_HALH, rect[0], rect[1]+SNAKE_WITH_HALH]
+        # else:
+        #     rect2 = [rect[0], rect[2]-SNAKE_WITH_HALH, rect[2], rect[3]+SNAKE_WITH_HALH]
+        # return rect2
+        return (self.myRects[id][0], self.myRects[id][1],
+         self.myRects[id][0] + self.myRects[id][2] - 1,
+         self.myRects[id][1] + self.myRects[id][3] - 1)
+
 
     #根据蛇身体的坐标，得出身体的矩形
     def _UpdateRects(self):
@@ -92,9 +108,7 @@ class Snake:
                 self.myRects.append((pos[0]-SNAKE_WITH_HALH , pos[1] , 2*SNAKE_WITH_HALH+1 , pos[3]-pos[1]+1))
             else:
                 print "error in _UpdateRects"
-        self.additionRect = [self.myRects[-1][0], self.myRects[-1][1],
-                             self.myRects[-1][0]+self.myRects[-1][2]-1,
-                             self.myRects[-1][1]+self.myRects[-1][3]-1]
+        self.additionRect = self.__RectMod(-1)
 
     def _DrawSnake(self):
         for rect in self.myRects:
@@ -246,41 +260,24 @@ class Snake:
         return RectIntersect(self.additionRect,
                              (self.applePos[0],self.applePos[1],self.applePos[0]+APPLE_WIDTH-1,self.applePos[1]+APPLE_HEIGHT-1))
 
-    def __RectMod(self, id):
-        rect = self.snakePoss[id]
-        if self._ToUp(id):
-            rect2 = [rect[2]-SNAKE_WITH_HALH, rect[3], rect[0]+SNAKE_WITH_HALH, rect[1]]
-        elif self._ToDown(id):
-            rect2 = [rect[0]-SNAKE_WITH_HALH, rect[1], rect[2]+SNAKE_WITH_HALH, rect[3]]
-        elif self._ToLeft(id):
-            rect2 = [rect[2], rect[3]-SNAKE_WITH_HALH, rect[0], rect[1]+SNAKE_WITH_HALH]
-        else:
-            rect2 = [rect[0], rect[2]-SNAKE_WITH_HALH, rect[2], rect[3]+SNAKE_WITH_HALH]
-        return rect2
-
     def _IsDead(self):
         headRect = self.snakePoss[-1]
 
         # hit wall
-        if self._ToUp(-1) and headRect[3] == 0:
+        if self._ToUp(-1) and headRect[3] < 0:
             return True
-        elif self._ToDown(-1) and headRect[3] == SCREEN_HEIGHT:
+        elif self._ToDown(-1) and headRect[3] >= SCREEN_HEIGHT:
             return True
-        elif self._ToLeft(-1) and headRect[2] == 0:
+        elif self._ToLeft(-1) and headRect[2] < 0:
             return True
-        elif self._ToRight(-1) and headRect[2] == SCREEN_WITH:
+        elif self._ToRight(-1) and headRect[2] >= SCREEN_WITH:
             return True
 
         # hit tail
-        headPos = self.__RectMod(-1)
 
         for i in range(len(self.snakePoss) - 1):
-            tailPos = self.__RectMod(i)
-            print("head", headPos)
-            print("tail", tailPos)
-            if RectIntersect(headPos, tailPos):
+            if RectIntersect(self.additionRect, self.__RectMod(i)):
                 return True
-
         return False
 
 
@@ -307,4 +304,11 @@ class Snake:
         if self.applePos!=None:
             self.eatApple = self._EatApple()
         self.v += self.eatApple * INIT_A
-        return (self._IsDead(),self.eatApple)
+
+        if self._IsDead():
+            self.dead = True
+            self.v = 0
+            return (True,self.eatApple)
+        else:
+            return (False,self.eatApple)
+
