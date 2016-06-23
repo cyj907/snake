@@ -97,7 +97,6 @@ class Snake:
                              self.myRects[-1][1]+self.myRects[-1][3]-1]
 
     def _DrawSnake(self):
-        self._UpdateRects()
         for rect in self.myRects:
             self.pygame.draw.rect(self.screen,SNAKE_COLOR,rect)
 
@@ -173,7 +172,6 @@ class Snake:
 
             
                             
-    #返回值True表示撞死了
     def _SankeGo(self,pass_time):
         moveDist = pass_time*self.v/10.0
         if self.dirChange:
@@ -247,6 +245,8 @@ class Snake:
     def _EatApple(self):
         return RectIntersect(self.additionRect,
                              (self.applePos[0],self.applePos[1],self.applePos[0]+APPLE_WIDTH-1,self.applePos[1]+APPLE_HEIGHT-1))
+
+    def _IsDead(self):
         
 
     #输入：
@@ -255,7 +255,6 @@ class Snake:
         #d：表示蛇的新运动方向
     #返回一个tuple(r1,r2),r1=true,表示撞死了，r2=true表示吃到苹果了
     def ForJade(self,pass_time,pos=None,d=None):
-        self._DrawSnake()
         # for l in self.snakePoss:
         #     self.pygame.draw.line(self.screen,SNAKE_COLOR,(l[0],l[1]),(l[2],l[3]),1)
         if d!=None and (d==0 or d==1 or d==2 or d==3):
@@ -263,9 +262,11 @@ class Snake:
         if pos!=None:
             self._SetApplePos(pos)
 
-
+        self._SankeGo(pass_time)
+        self._UpdateRects()
+        self._DrawSnake()
         self.eatApple = False
         if self.applePos!=None:
             self.eatApple = self._EatApple()
         self.v += self.eatApple * INIT_A
-        return (self._SankeGo(pass_time),self.eatApple)
+        return (False,self.eatApple)
