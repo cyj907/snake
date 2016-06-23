@@ -11,10 +11,11 @@ from Apple import *
 pygame.init()
 screen = pygame.display.set_mode((SCREEN_WITH, SCREEN_HEIGHT), 0, 32) 
 pygame.display.set_caption("Snake!")
+applePic = pygame.image.load('apple.png').convert()
 
 
 snake_zhs = Snake(pygame,screen)
-apple_public = Apple(pygame,screen)
+apple_public = Apple(pygame,screen,applePic)
 test = pygame.font.Font(None,30)
 clock = pygame.time.Clock()
 

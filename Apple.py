@@ -10,11 +10,12 @@ import random
 
 class Apple:
         
-    def __init__(self,pygame,screen):
+    def __init__(self,pygame,screen,applePic):
         self.pygame = pygame
         self.screen = screen
         self.x=None
         self.y=None
+        self.applePic=applePic
         
 
     def _GetApplePos(self):
@@ -25,6 +26,7 @@ class Apple:
     def SetApple(self,eaten=False):
         if eaten:
             self._GetApplePos()
-        self.pygame.draw.rect(self.screen,APPLE_COLOR,(self.x,self.y,APPLE_WIDTH,APPLE_HEIGHT))
+        # self.pygame.draw.rect(self.screen,APPLE_COLOR,(self.x,self.y,APPLE_WIDTH,APPLE_HEIGHT))
+        self.screen.blit(self.applePic,(self.x,self.y))
         return (self.x,self.y)
             

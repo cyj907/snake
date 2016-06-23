@@ -253,8 +253,8 @@ class Snake:
         #d：表示蛇的新运动方向
     #返回一个tuple(r1,r2),r1=true,表示撞死了，r2=true表示吃到苹果了
     def ForJade(self,pass_time,pos=None,d=None):
-        print self.myRects
-        print '------------------------------------------------------'
+        # print self.myRects
+        # print '------------------------------------------------------'
         # for l in self.snakePoss:
         #     self.pygame.draw.line(self.screen,SNAKE_COLOR,(l[0],l[1]),(l[2],l[3]),1)
         if d!=None and (d==0 or d==1 or d==2 or d==3):
