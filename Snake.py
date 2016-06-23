@@ -6,10 +6,10 @@
 from Const import *
 
 
-INIT_V = 3
+INIT_V = 1
 INIT_DIRECT = 3
 INIT_POS = [10,50,200,50]    #pos定义方式，首末两点的坐标
-INIT_RECT = [INIT_POS[0], INIT_POS[1]-SNAKE_WITH_HALH, INIT_POS[2], INIT_POS[3]+SNAKE_WITH_HALH]
+INIT_A = 0.4 #加速度
     
 
 class Snake:
@@ -20,10 +20,11 @@ class Snake:
         self.dirChange = False
         self.v = INIT_V             #初始化的速度
         self.snakePoss=[INIT_POS]
-        self.color = SNAKE_COLOR
         self.applePos = None
         self.myRects = None
         self.additionRect = None
+        self.eatApple = False
+        self.addSnakeLength_Cache = 0
 
 
 
@@ -129,8 +130,8 @@ class Snake:
                     self.snakePoss.pop(0)
                     return
                 else:
-                    self.snakePoss.pop(0)
                     decDist-=(self.snakePoss[0][0]-self.snakePoss[0][2])
+                    self.snakePoss.pop(0)
             elif self._ToRight(0):
                 if self.snakePoss[0][2]-self.snakePoss[0][0]>decDist:
                     self.snakePoss[0][0]+=decDist
@@ -141,8 +142,8 @@ class Snake:
                     self.snakePoss.pop(0)
                     return
                 else:
-                    self.snakePoss.pop(0)
                     decDist-=(self.snakePoss[0][2]-self.snakePoss[0][0])
+                    self.snakePoss.pop(0)
             elif self._ToUp(0):
                 if self.snakePoss[0][1]-self.snakePoss[0][3]>decDist:
                     self.snakePoss[0][1]-=decDist
@@ -153,8 +154,8 @@ class Snake:
                     self.snakePoss.pop(0)
                     return
                 else:
-                    self.snakePoss.pop(0)
                     decDist-=(self.snakePoss[0][1]-self.snakePoss[0][3])
+                    self.snakePoss.pop(0)
             elif self._ToDown(0):
                 if self.snakePoss[0][3]-self.snakePoss[0][1]>decDist:
                     self.snakePoss[0][1]+=decDist
@@ -165,8 +166,8 @@ class Snake:
                     self.snakePoss.pop(0)
                     return
                 else:
-                    self.snakePoss.pop(0)
                     decDist-=(self.snakePoss[0][3]-self.snakePoss[0][1])
+                    self.snakePoss.pop(0)
             else:
                 print "error in _UpdateRects"
 
@@ -230,7 +231,14 @@ class Snake:
             else:
                 self.snakePoss[-1][2]+=moveDist
 
-        self._Decrese(moveDist)
+        moveDist-=self.addSnakeLength_Cache
+        self.addSnakeLength_Cache=0
+        if self.eatApple:
+            moveDist-=APPLE_WIDTH
+        if moveDist>0:
+            self._Decrese(moveDist)
+        else:
+            self.addSnakeLength_Cache = -moveDist
                             
             
         
@@ -255,8 +263,10 @@ class Snake:
             self._SetDirection(d)
         if pos!=None:
             self._SetApplePos(pos)
-        
+
+
+        self.eatApple = False
         if self.applePos!=None:
-            return (self._SankeGo(pass_time),self._EatApple())
-        else:
-            return (self._SankeGo(pass_time),False)
+            self.eatApple = self._EatApple()
+        self.v += self.eatApple * INIT_A
+        return (self._SankeGo(pass_time),self.eatApple)
