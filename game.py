@@ -17,13 +17,13 @@ class Top:
 
         self.menu = Menu(pygame,screen,SCREEN_WITH,SCREEN_HEIGHT,[pvsc,p1vsp2,quitPic],['pvsc','p1vsp2','quit'])
 
-        direction = None
         self.apple_eaten = True
         self.score = 0
 
         self.t_start = time.time()
         self.best_s = 0
         self.text = pygame.font.Font(None,30)
+        self.direction = None
 
     def Update(self,time_passed,key=None,pos=None):
 
@@ -40,17 +40,17 @@ class Top:
 
         elif self.state == 'gaming':
             if key == K_UP:
-                direction = 0
+                self.direction = 0
             elif key == K_DOWN:
-                direction = 1
+                self.direction = 1
             elif key == K_LEFT:
-                direction = 2
+                self.direction = 2
             elif key == K_RIGHT:
-                direction = 3
+                self.direction = 3
             else:
-                direction = None
+                self.direction = None
             d_t = time.time() - self.t_start
-            (snake_dead, self.apple_eaten) = self.snake.ForJade(time_passed, self.apple.SetApple(self.apple_eaten), direction)
+            (snake_dead, self.apple_eaten) = self.snake.ForJade(time_passed, self.apple.SetApple(self.apple_eaten), self.direction)
 
             if self.apple_eaten:
                 self.score += 10
