@@ -19,7 +19,7 @@ class Snake:
         self.direction = INIT_DIRECT  #0-3 表示上下左右，初始化往上跑
         self.dirChange = False
         self.v = INIT_V             #初始化的速度
-        self.snakePoss=[INIT_POS]
+        self.snakePoss=[INIT_POS[:]]
         self.applePos = None
         self.myRects = None
         self.additionRect = None
@@ -27,7 +27,17 @@ class Snake:
         self.addSnakeLength_Cache = 0
         self.dead = False
 
-
+    def Reset(self):
+        self.direction = INIT_DIRECT
+        self.dirChange = False
+        self.v = INIT_V
+        self.snakePoss = [INIT_POS[:]]
+        self.applePos = None
+        self.myRects = None
+        self.additionRect = None
+        self.eatApple = False
+        self.addSnakeLength_Cache = 0
+        self.dead = False
 
     def _ToLeft(self,index):
         return self.snakePoss[index][0]>self.snakePoss[index][2]

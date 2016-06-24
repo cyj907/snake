@@ -1,7 +1,24 @@
 from Const import *
 from Snake import *
 from Apple import *
+import os
 from Menu import *
+
+# show game over animation using sprite technique
+def GameOver(scrn):
+    try:
+        # load image and scale to fit screen size
+        spritesheet = pygame.image.load(os.path.join('graph', 'gameover.png')).convert()
+        spritesheet = pygame.transform.scale(spritesheet, (SCREEN_WITH * 24, SCREEN_HEIGHT))
+    except:
+        raise(UserWarning, "Unable to load sprite image file")
+
+    t = 100
+    for i in range(24):
+        subImage = spritesheet.subsurface(SCREEN_WITH*i,0,SCREEN_WITH,SCREEN_HEIGHT)
+        scrn.blit(subImage, (0,0))
+        pygame.time.delay(t)
+        pygame.display.update()
 
 
 class Top:
@@ -11,9 +28,11 @@ class Top:
         self.snake = snake
         self.apple = apple
         self.state = 'menu'
-        p1vsp2 = pygame.image.load('P1VSP2.png').convert()
-        pvsc = pygame.image.load('NewGame.png').convert()
-        quitPic = pygame.image.load('Quit.png').convert()
+        self.direction = None
+        dirpath = 'graph'
+        p1vsp2 = pygame.image.load(os.path.join(dirpath,'P1VSP2.png')).convert()
+        pvsc = pygame.image.load(os.path.join(dirpath, 'NewGame.png')).convert()
+        quitPic = pygame.image.load(os.path.join(dirpath, 'Quit.png')).convert()
 
         self.menu = Menu(pygame,screen,SCREEN_WITH,SCREEN_HEIGHT,[pvsc,p1vsp2,quitPic],['pvsc','p1vsp2','quit'])
 
@@ -26,12 +45,12 @@ class Top:
         self.direction = None
 
     def Update(self,time_passed,key=None,pos=None):
-
         if self.state == 'menu':
             self.menu.ShowMenu()
             getM = self.menu.MouseDown(pos)
             if getM=='pvsc':
                 self.state = 'gaming'
+                self.snake.Reset()
             elif getM == 'p1vsp2':
                 pass
             elif getM == 'quit':
@@ -48,9 +67,13 @@ class Top:
             elif key == K_RIGHT:
                 self.direction = 3
             else:
-                self.direction = None
+                direction = self.direction
+            self.direction = direction
             d_t = time.time() - self.t_start
             (snake_dead, self.apple_eaten) = self.snake.ForJade(time_passed, self.apple.SetApple(self.apple_eaten), self.direction)
+
+            if snake_dead:
+                self.state = 'over'
 
             if self.apple_eaten:
                 self.score += 10
@@ -62,23 +85,18 @@ class Top:
             self.best_s = max(self.best_s, tmp_s)
             self.screen.blit(self.text.render(str(tmp_s), 1, (255, 255, 255)), (0, 20))
             self.screen.blit(self.text.render("best score : " + str(self.best_s), 1, (255, 255, 255)), (0, 40))
-
         elif self.state == 'over':
-            pass
+            GameOver(screen)
+            self.state = 'menu'
         else:
             print "error in Top Update"
-def GameOver(game, scrn):
-    #gameOverPic = game.image.load('game-over.gif').convert_alpha()
-    #scrn.blit(gameOverPic, (0,0))
-    pass
-
 
 
 
 pygame.init()
 screen = pygame.display.set_mode((SCREEN_WITH, SCREEN_HEIGHT), 0, 32) 
 pygame.display.set_caption("Snake!")
-applePic = pygame.image.load('apple.png').convert_alpha()
+applePic = pygame.image.load(os.path.join('graph', 'apple.png')).convert()
 
 snake_zhs = Snake(pygame,screen)
 apple_public = Apple(pygame,screen,applePic)
@@ -103,4 +121,5 @@ while True:
 
     top.Update(clock.tick(30),key,mousePos)
     pygame.display.update()
-    
+
+
