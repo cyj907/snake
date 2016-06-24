@@ -14,7 +14,7 @@ def GameOver(scrn):
         raise(UserWarning, "Unable to load sprite image file")
 
     t = 100
-    for i in range(24):
+    for i in range(12):
         subImage = spritesheet.subsurface(SCREEN_WITH*i,0,SCREEN_WITH,SCREEN_HEIGHT)
         scrn.blit(subImage, (0,0))
         pygame.time.delay(t)
@@ -42,7 +42,6 @@ class Top:
         self.t_start = time.time()
         self.best_s = 0
         self.text = pygame.font.Font(None,30)
-        self.direction = None
 
     def Update(self,time_passed,key=None,pos=None):
         if self.state == 'menu':
@@ -59,18 +58,17 @@ class Top:
 
         elif self.state == 'gaming':
             if key == K_UP:
-                self.direction = 0
+                direction = 0
             elif key == K_DOWN:
-                self.direction = 1
+                direction = 1
             elif key == K_LEFT:
-                self.direction = 2
+                direction = 2
             elif key == K_RIGHT:
-                self.direction = 3
+                direction = 3
             else:
-                direction = self.direction
-            self.direction = direction
+                direction = None
             d_t = time.time() - self.t_start
-            (snake_dead, self.apple_eaten) = self.snake.ForJade(time_passed, self.apple.SetApple(self.apple_eaten), self.direction)
+            (snake_dead, self.apple_eaten) = self.snake.ForJade(time_passed, self.apple.SetApple(self.apple_eaten), direction)
 
             if snake_dead:
                 self.state = 'over'

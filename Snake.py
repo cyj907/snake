@@ -310,6 +310,8 @@ class Snake:
         #     self.pygame.draw.line(self.screen,SNAKE_COLOR,(l[0],l[1]),(l[2],l[3]),1)
         if d!=None and (d==0 or d==1 or d==2 or d==3):
             self._SetDirection(d)
+        else:
+            self.dirChange = False
         if pos!=None:
             self._SetApplePos(pos)
 
