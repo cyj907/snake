@@ -3,6 +3,7 @@ from Snake import *
 from Apple import *
 import os
 from Menu import *
+from AI1 import *
 
 # show game over animation using sprite technique
 def GameOver(scrn):
@@ -14,7 +15,7 @@ def GameOver(scrn):
         raise(UserWarning, "Unable to load sprite image file")
 
     t = 100
-    for i in range(12):
+    for i in range(24):
         subImage = spritesheet.subsurface(SCREEN_WITH*i,0,SCREEN_WITH,SCREEN_HEIGHT)
         scrn.blit(subImage, (0,0))
         pygame.time.delay(t)
@@ -33,15 +34,18 @@ class Top:
         p1vsp2 = pygame.image.load(os.path.join(dirpath,'P1VSP2.png')).convert()
         pvsc = pygame.image.load(os.path.join(dirpath, 'NewGame.png')).convert()
         quitPic = pygame.image.load(os.path.join(dirpath, 'Quit.png')).convert()
+        cpPic = pygame.image.load(os.path.join(dirpath, 'CP.png')).convert()
 
-        self.menu = Menu(pygame,screen,SCREEN_WITH,SCREEN_HEIGHT,[pvsc,p1vsp2,quitPic],['pvsc','p1vsp2','quit'])
+        self.menu = Menu(pygame,screen,SCREEN_WITH,SCREEN_HEIGHT,[pvsc,cpPic,p1vsp2,quitPic],['pvsc','cp','p1vsp2','quit'])
 
-        self.apple_eaten = True
+        self.apple_eaten = False
         self.score = 0
 
         self.t_start = time.time()
         self.best_s = 0
         self.text = pygame.font.Font(None,30)
+
+        self.ai1=AI1(snake,apple)
 
     def Update(self,time_passed,key=None,pos=None):
         if self.state == 'menu':
@@ -50,6 +54,8 @@ class Top:
             if getM=='pvsc':
                 self.state = 'gaming'
                 self.snake.Reset()
+            elif getM=='cp':
+                self.state ='cp'
             elif getM == 'p1vsp2':
                 pass
             elif getM == 'quit':
@@ -75,17 +81,24 @@ class Top:
 
             if self.apple_eaten:
                 self.score += 10
-
             self.screen.blit(self.text.render(str(self.score), 1, (255, 255, 255)), (0, 0))
-
             d_t = max(d_t, 1)
             tmp_s = int(100 * self.score / d_t)
             self.best_s = max(self.best_s, tmp_s)
             self.screen.blit(self.text.render(str(tmp_s), 1, (255, 255, 255)), (0, 20))
             self.screen.blit(self.text.render("best score : " + str(self.best_s), 1, (255, 255, 255)), (0, 40))
+        elif self.state == 'cp':
+            direction = self.ai1.GetDirection(time_passed)
+            (snake_dead, self.apple_eaten) = self.snake.ForJade(time_passed, self.apple.SetApple(self.apple_eaten), direction)
+            print direction,snake_dead
+            print '========================='
+            if snake_dead:
+                self.state = 'over'
         elif self.state == 'over':
-            GameOver(screen)
-            self.state = 'menu'
+            # GameOver(screen)
+            self.apple.SetApple(False)
+            self.snake.ForJade()
+            self.state = 'over'
         else:
             print "error in Top Update"
 

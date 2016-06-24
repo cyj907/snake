@@ -6,7 +6,7 @@
 from Const import *
 
 
-INIT_V = 1
+INIT_V = 0.5
 INIT_DIRECT = 3
 INIT_POS = [10,50,200,50]    #pos定义方式，首末两点的坐标
 INIT_A = 0 #加速度
@@ -47,6 +47,18 @@ class Snake:
         return self.snakePoss[index][1]>self.snakePoss[index][3]
     def _ToDown(self,index):
         return self.snakePoss[index][1]<self.snakePoss[index][3]
+
+    def GetNowDirection(self):
+        if self._ToUp(-1):
+            return 0
+        elif self._ToDown(-1):
+            return 1
+        elif self._ToLeft(-1):
+            return 2
+        elif self._ToRight(-1):
+            return 3
+        else:
+            print 'error in GetNowDirection'
 
 
 
@@ -117,6 +129,7 @@ class Snake:
             elif self._ToDown(i):
                 self.myRects.append((pos[0]-SNAKE_WITH_HALH , pos[1] , 2*SNAKE_WITH_HALH+1 , pos[3]-pos[1]+1))
             else:
+                print self.snakePoss
                 print "error in _UpdateRects"
         self.additionRect = self.__RectMod(-1)
 
@@ -198,6 +211,7 @@ class Snake:
 
     def _SankeGo(self,pass_time):
         moveDist = int(pass_time*self.v/10.0)
+        moveDist = max(2,moveDist)
         if self.dirChange:
             if self.direction==0:
                 if self._ToLeft(-1):
@@ -292,13 +306,26 @@ class Snake:
         return False
 
 
+    def ForTestNewStateWillDead(self,pass_time,pos=None,d=None):
+        snake_cpy=copy.copy(self)
+        if d!=None and (d==0 or d==1 or d==2 or d==3):
+            snake_cpy._SetDirection(d)
+        else:
+            snake_cpy.dirChange = False
+        if pos!=None:
+            snake_cpy._SetApplePos(pos)
+        snake_cpy._SankeGo(pass_time)
+        snake_cpy._UpdateRects()
+        return snake_cpy._IsDead()
+
+
 
     #输入：
         #pass_time：表示相邻相邻帧之间的时间间隔
         #pos：表示苹果的位置，默认为None，即未更新
         #d：表示蛇的新运动方向
     #返回一个tuple(r1,r2),r1=true,表示撞死了，r2=true表示吃到苹果了
-    def ForJade(self,pass_time,pos=None,d=None):
+    def ForJade(self,pass_time=0,pos=None,d=None):
         if self.dead:
             self._UpdateRects()
             self._DrawSnake()
