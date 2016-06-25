@@ -118,7 +118,7 @@ class Top:
                 self.state = 'over'
         elif self.state == 'over':
             # GameOver(screen)
-            #self.apple.SetApple()
+            self.apple.ShowApple()
             self.snake.ForJade()
             self.state = 'over'
         else:

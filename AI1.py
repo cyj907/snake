@@ -39,14 +39,12 @@ class AI1:
         directions = []
         headDir = self.snake.GetNowDirection()
         if headDir==0 or headDir==1:
-            """
             if headDir==0:
                 if not self.__AppleIsDonw():
                     directions.append(0)
             else:
                 if not self.__AppleIsUp():
                     directions.append(1)
-            """
             if self.__AppleIsLeftWithHalf():
                 directions.append(2)
             elif self.__AppleIsRightWithHalf():
@@ -59,14 +57,12 @@ class AI1:
                 directions.append(3)
             """
         else:
-            """
             if headDir==2:
                 if not self.__AppleIsRight():
                     directions.append(2)
             else:
                 if not self.__AppleIsLeft():
                     directions.append(3)
-            """
             if self.__AppleIsUpWithHalf():
                 directions.append(0)
             elif self.__AppleIsDonwWithHalf():
