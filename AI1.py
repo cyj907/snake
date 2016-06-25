@@ -9,10 +9,10 @@ class AI1:
         self.snake_pos=None
 
     def __AppleIsUp(self):
-        return self.apple_pos[1]+APPLE_HEIGHT<self.snake_pos[1]
+        return self.apple_pos[1]+APPLE_HEIGHT-1<self.snake_pos[1]
 
     def __AppleIsUpWithHalf(self):
-        return self.apple_pos[1]+APPLE_HEIGHT<self.snake_pos[1]-SNAKE_WITH_HALH
+        return self.apple_pos[1]+APPLE_HEIGHT-1<self.snake_pos[1]-SNAKE_WITH_HALH
 
     def __AppleIsDonw(self):
         return self.apple_pos[1]>self.snake_pos[1]
@@ -21,10 +21,10 @@ class AI1:
         return self.apple_pos[1]>self.snake_pos[1]+SNAKE_WITH_HALH
 
     def __AppleIsLeft(self):
-        return self.apple_pos[0]+APPLE_WIDTH<self.snake_pos[0]
+        return self.apple_pos[0]+APPLE_WIDTH-1<self.snake_pos[0]
 
     def __AppleIsLeftWithHalf(self):
-        return self.apple_pos[0]+APPLE_WIDTH<self.snake_pos[0]+SNAKE_WITH_HALH
+        return self.apple_pos[0]+APPLE_WIDTH-1<self.snake_pos[0]-SNAKE_WITH_HALH
 
     def __AppleIsRight(self):
         return self.apple_pos[0]>self.snake_pos[0]
@@ -39,44 +39,66 @@ class AI1:
         directions = []
         headDir = self.snake.GetNowDirection()
         if headDir==0 or headDir==1:
+            """
             if headDir==0:
-                if self.__AppleIsUp():
+                if not self.__AppleIsDonw():
                     directions.append(0)
             else:
-                if self.__AppleIsDonw():
+                if not self.__AppleIsUp():
                     directions.append(1)
-
+            """
             if self.__AppleIsLeftWithHalf():
                 directions.append(2)
             elif self.__AppleIsRightWithHalf():
                 directions.append(3)
+            directions.append(headDir)
+
+            """
             if not directions:  #apple is down or up
                 directions.append(2)
                 directions.append(3)
+            """
         else:
+            """
             if headDir==2:
-                if self.__AppleIsLeft():
+                if not self.__AppleIsRight():
                     directions.append(2)
             else:
-                if self.__AppleIsRight():
+                if not self.__AppleIsLeft():
                     directions.append(3)
-
+            """
             if self.__AppleIsUpWithHalf():
                 directions.append(0)
             elif self.__AppleIsDonwWithHalf():
                 directions.append(1)
+            directions.append(headDir)
+
+            """
             if not directions:
                 directions.append(0)
                 directions.append(1)
-        print '------------------------------------'
-        print directions
+            """
         for d in directions:
-            print (d,self.snake.ForTestNewStateWillDead(time_passed,self.apple_pos,d))
-            if not self.snake.ForTestNewStateWillDead(time_passed,self.apple_pos,d):
+            dead = self.snake.ForTestNewStateWillDead(time_passed,self.apple_pos,d)
+            if dead:
+                print '------------------------------------'
+                print "headDir=", headDir
+                print "direction=", d
+                print "apple=", self.apple_pos
+                print "snake=", self.snake_pos
+            #print "#1 for: ", (d, dead)
+            if not dead:
                 return d
         for d in set([0,1,2,3])-set(directions):
-            print (d,self.snake.ForTestNewStateWillDead(time_passed,self.apple_pos,d))
-            if not self.snake.ForTestNewStateWillDead(time_passed,self.apple_pos,d):
+            dead = self.snake.ForTestNewStateWillDead(time_passed,self.apple_pos,d)
+            if dead:
+                print '------------------------------------'
+                print "headDir=", headDir
+                print "direction=", d
+                print "apple=", self.apple_pos
+                print "snake=", self.snake_pos
+            #print "#2 for: ", (d, dead)
+            if not dead:
                 return d
         return None
 

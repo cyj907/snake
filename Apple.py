@@ -18,17 +18,20 @@ class Apple:
         self.applePic=applePic
         
 
-    def _GetApplePos(self):
+    def _GenApplePos(self):
         self.x=random.randint(0,SCREEN_WITH-APPLE_WIDTH+1)
         self.y=random.randint(0,SCREEN_HEIGHT-APPLE_HEIGHT+1)
 
+    def SetApple(self):
+        self._GenApplePos()
 
-    def SetApple(self,eaten=False):
-        if eaten:
-            self._GetApplePos()
+    def ShowApple(self):
         # self.pygame.draw.rect(self.screen,APPLE_COLOR,(self.x,self.y,APPLE_WIDTH,APPLE_HEIGHT))
         self.screen.blit(self.applePic,(self.x,self.y))
-        return (self.x,self.y)
+
+    # public method for getting the rectangle of apple
+    def getRect(self):
+        return (self.x, self.y, self.x + APPLE_WIDTH - 1, self.y + APPLE_HEIGHT - 1)
 
     def GetApplePos(self):
         return (self.x,self.y)

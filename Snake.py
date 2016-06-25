@@ -104,6 +104,13 @@ class Snake:
          self.myRects[id][0] + self.myRects[id][2] - 1,
          self.myRects[id][1] + self.myRects[id][3] - 1)
 
+    # public method for getting rectangles of snake body
+    def getRects(self):
+        body = []
+        for i in range(len(self.snakePoss)):
+            body.append(self.__RectMod(i))
+        return body
+
 
     #根据蛇身体的坐标，得出身体的矩形
     def _UpdateRects(self):
@@ -305,9 +312,16 @@ class Snake:
                 return True
         return False
 
+    def __deepcopy__(self, memo):
+        newSnake = copy.copy(self)
+        newSnake.snakePoss = copy.deepcopy(self.snakePoss, memo)
+        newSnake.myRects = copy.deepcopy(self.myRects, memo)
+        newSnake.additionRect = copy.deepcopy(self.additionRect, memo)
+        newSnake.applePos = copy.deepcopy(self.applePos, memo)
+        return newSnake
 
     def ForTestNewStateWillDead(self,pass_time,pos=None,d=None):
-        snake_cpy=copy.copy(self)
+        snake_cpy=copy.deepcopy(self)
         if d!=None and (d==0 or d==1 or d==2 or d==3):
             snake_cpy._SetDirection(d)
         else:
@@ -316,6 +330,7 @@ class Snake:
             snake_cpy._SetApplePos(pos)
         snake_cpy._SankeGo(pass_time)
         snake_cpy._UpdateRects()
+
         return snake_cpy._IsDead()
 
 
@@ -327,7 +342,7 @@ class Snake:
     #返回一个tuple(r1,r2),r1=true,表示撞死了，r2=true表示吃到苹果了
     def ForJade(self,pass_time=0,pos=None,d=None):
         if self.dead:
-            self._UpdateRects()
+            #self._UpdateRects()
             self._DrawSnake()
             return (True,False)
 

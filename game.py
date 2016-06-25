@@ -21,6 +21,14 @@ def GameOver(scrn):
         pygame.time.delay(t)
         pygame.display.update()
 
+def IsValidApple(apple, snake):
+    appleRect = apple.getRect()
+    print appleRect
+    snakeRects = snake.getRects()
+    for rect in snakeRects:
+        if RectIntersect(appleRect, rect):
+            return False
+    return True
 
 class Top:
     def __init__(self,pygame,screen,snake,apple):
@@ -74,7 +82,14 @@ class Top:
             else:
                 direction = None
             d_t = time.time() - self.t_start
-            (snake_dead, self.apple_eaten) = self.snake.ForJade(time_passed, self.apple.SetApple(self.apple_eaten), direction)
+
+            if self.apple_eaten:
+                self.apple.SetApple()
+                while not IsValidApple(self.apple, self.snake):
+                    self.apple.SetApple()
+            self.apple.ShowApple()
+
+            (snake_dead, self.apple_eaten) = self.snake.ForJade(time_passed, self.apple.GetApplePos(), direction)
 
             if snake_dead:
                 self.state = 'over'
@@ -89,14 +104,21 @@ class Top:
             self.screen.blit(self.text.render("best score : " + str(self.best_s), 1, (255, 255, 255)), (0, 40))
         elif self.state == 'cp':
             direction = self.ai1.GetDirection(time_passed)
-            (snake_dead, self.apple_eaten) = self.snake.ForJade(time_passed, self.apple.SetApple(self.apple_eaten), direction)
-            print direction,snake_dead
+
+            if self.apple_eaten:
+                self.apple.SetApple()
+                while not IsValidApple(self.apple, self.snake):
+                    self.apple.SetApple()
+            self.apple.ShowApple()
+
+            (snake_dead, self.apple_eaten) = self.snake.ForJade(time_passed, self.apple.GetApplePos(), direction)
+            #print direction,snake_dead
             print '========================='
             if snake_dead:
                 self.state = 'over'
         elif self.state == 'over':
             # GameOver(screen)
-            self.apple.SetApple(False)
+            #self.apple.SetApple()
             self.snake.ForJade()
             self.state = 'over'
         else:
