@@ -14,10 +14,10 @@ class AI1:
     def __AppleIsUpWithHalf(self):
         return self.apple_pos[1]+APPLE_HEIGHT-1<self.snake_pos[1]-SNAKE_WITH_HALH
 
-    def __AppleIsDonw(self):
+    def __AppleIsDown(self):
         return self.apple_pos[1]>self.snake_pos[1]
 
-    def __AppleIsDonwWithHalf(self):
+    def __AppleIsDownWithHalf(self):
         return self.apple_pos[1]>self.snake_pos[1]+SNAKE_WITH_HALH
 
     def __AppleIsLeft(self):
@@ -39,11 +39,17 @@ class AI1:
         directions = []
         headDir = self.snake.GetNowDirection()
         if headDir==0 or headDir==1:
+            # if headDir==0:
+            #     if not self.__AppleIsDonw():
+            #         directions.append(0)
+            # else:
+            #     if not self.__AppleIsUp():
+            #         directions.append(1)
             if headDir==0:
-                if not self.__AppleIsDonw():
+                if  self.__AppleIsUp():
                     directions.append(0)
             else:
-                if not self.__AppleIsUp():
+                if  self.__AppleIsDown():
                     directions.append(1)
             if self.__AppleIsLeftWithHalf():
                 directions.append(2)
@@ -57,15 +63,21 @@ class AI1:
                 directions.append(3)
             """
         else:
+        #     if headDir==2:
+        #         if not self.__AppleIsRight():
+        #             directions.append(2)
+        #     else:
+        #         if not self.__AppleIsLeft():
+        #             directions.append(3)
             if headDir==2:
-                if not self.__AppleIsRight():
+                if  self.__AppleIsLeft():
                     directions.append(2)
             else:
-                if not self.__AppleIsLeft():
+                if  self.__AppleIsRight():
                     directions.append(3)
             if self.__AppleIsUpWithHalf():
                 directions.append(0)
-            elif self.__AppleIsDonwWithHalf():
+            elif self.__AppleIsDownWithHalf():
                 directions.append(1)
             directions.append(headDir)
 
