@@ -60,11 +60,6 @@ class Snake:
         else:
             print 'error in GetNowDirection'
 
-
-
-
-        
-
     def _SetDirection(self,d):
         lastPos = self.snakePoss[-1]
         if (lastPos[1]==lastPos[3]) and (d==2 or d==3):  #蛇的新方向和旧方向都在水平方向
