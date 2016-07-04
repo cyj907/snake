@@ -1,6 +1,7 @@
 from State import State
 from Menu import *
 from Direction import Direction
+from AI2 import AI2
 import os
 
 class Game:
@@ -36,6 +37,7 @@ class Game:
         self.text = pygame.font.Font(None,30)
 
         #self.ai1=AI1(snake,apple)
+        self.ai = AI2()
 
     def Update(self,key=None,pos=None):
         if self.gameOption == 'menu':
@@ -78,15 +80,20 @@ class Game:
             self._DisplayScore()
             self._DisplayState(self.state)
         elif self.gameOption == 'cp':
-            #direction = self.ai1.GetDirection(time_passed)
+            nextDirection = self.ai.GetDirection(self.state)
+            nextState = self.state.GetNextState(nextDirection)
+            snake_dead = nextState.snake.IsDead()
+            apple_eaten = nextState.IsAppleEaten()
 
-            #self.apple.ShowApple()
+            if snake_dead:
+                self.gameOption = 'over'
+            if apple_eaten:
+                self.score += 10
+                nextState.IncreaseMovSpeed()
 
-            #(snake_dead, self.apple_eaten) = self.snake.ForJade(time_passed, self.apple.GetApplePos(), direction)
-            #print direction,snake_dead
-            print '========================='
-            #if snake_dead:
-            self.gameOption = 'over'
+            self.state = nextState
+            self._DisplayScore()
+            self._DisplayState(self.state)
         elif self.gameOption == 'over':
             # self._GameOver()
             self._DisplayState(self.state)
