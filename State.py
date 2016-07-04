@@ -1,5 +1,5 @@
-from Snake2 import Snake
-from Apple2 import Apple
+from Snake import Snake
+from Apple import Apple
 from Const import *
 
 class State:
