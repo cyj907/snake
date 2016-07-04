@@ -1,42 +1,22 @@
-from Const import *
-from Snake import *
-from Apple import *
-import os
+from State import State
 from Menu import *
-from AI1 import *
+from Direction import Direction
+from AI2 import AI2
+import os
 
-# show game over animation using sprite technique
-def GameOver(scrn):
-    try:
-        # load image and scale to fit screen size
-        spritesheet = pygame.image.load(os.path.join('graph', 'gameover.png')).convert()
-        spritesheet = pygame.transform.scale(spritesheet, (SCREEN_WITH * 24, SCREEN_HEIGHT))
-    except:
-        raise(UserWarning, "Unable to load sprite image file")
+class Game:
 
-    t = 100
-    for i in range(24):
-        subImage = spritesheet.subsurface(SCREEN_WITH*i,0,SCREEN_WITH,SCREEN_HEIGHT)
-        scrn.blit(subImage, (0,0))
-        pygame.time.delay(t)
-        pygame.display.update()
-
-def IsValidApple(apple, snake):
-    appleRect = apple.getRect()
-    print appleRect
-    snakeRects = snake.getRects()
-    for rect in snakeRects:
-        if RectIntersect(appleRect, rect):
-            return False
-    return True
-
-class Top:
-    def __init__(self,pygame,screen,snake,apple):
+    def __init__(self, pygame):
         self.pygame = pygame
-        self.screen = screen
-        self.snake = snake
-        self.apple = apple
-        self.state = 'menu'
+        self.pygame.init()
+        self.screen = self.pygame.display.set_mode((SCREEN_WITH, SCREEN_HEIGHT), 0, 32)
+        self.pygame.display.set_caption("Snake!")
+        self.applePic = self.pygame.image.load(os.path.join('graph', 'apple.png')).convert()
+        self.state = State()
+        self.clock = pygame.time.Clock()
+
+        t0 = self.clock.tick()
+        self.gameOption = 'menu'
         self.direction = None
         dirpath = 'graph'
         p1vsp2 = pygame.image.load(os.path.join(dirpath,'P1VSP2.png')).convert()
@@ -44,7 +24,10 @@ class Top:
         quitPic = pygame.image.load(os.path.join(dirpath, 'Quit.png')).convert()
         cpPic = pygame.image.load(os.path.join(dirpath, 'CP.png')).convert()
 
-        self.menu = Menu(pygame,screen,SCREEN_WITH,SCREEN_HEIGHT,[pvsc,cpPic,p1vsp2,quitPic],['pvsc','cp','p1vsp2','quit'])
+        self.menu = Menu(self.pygame, self.screen,
+                         SCREEN_WITH, SCREEN_HEIGHT,
+                         [pvsc, cpPic, p1vsp2, quitPic],
+                         ['pvsc', 'cp', 'p1vsp2', 'quit'])
 
         self.apple_eaten = False
         self.score = 0
@@ -53,116 +36,127 @@ class Top:
         self.best_s = 0
         self.text = pygame.font.Font(None,30)
 
-        self.ai1=AI1(snake,apple)
+        #self.ai1=AI1(snake,apple)
+        self.ai = AI2()
 
-    def Update(self,time_passed,key=None,pos=None):
-        if self.state == 'menu':
+    def Update(self,key=None,pos=None):
+        if self.gameOption == 'menu':
             self.menu.ShowMenu()
             getM = self.menu.MouseDown(pos)
             if getM=='pvsc':
-                self.state = 'gaming'
-                self.snake.Reset()
+                self.gameOption = 'gaming'
+                self.state.ResetSnake()
             elif getM=='cp':
-                self.state ='cp'
+                self.gameOption = 'cp'
             elif getM == 'p1vsp2':
                 pass
             elif getM == 'quit':
                 self.pygame.quit()
                 exit()
-
-        elif self.state == 'gaming':
+        elif self.gameOption == 'gaming':
             if key == K_UP:
-                direction = 0
+                direction = Direction.North
             elif key == K_DOWN:
-                direction = 1
+                direction = Direction.South
             elif key == K_LEFT:
-                direction = 2
+                direction = Direction.West
             elif key == K_RIGHT:
-                direction = 3
+                direction = Direction.East
             else:
-                direction = None
-            d_t = time.time() - self.t_start
+                direction = Direction.Stop
 
-            if self.apple_eaten:
-                self.apple.SetApple()
-                while not IsValidApple(self.apple, self.snake):
-                    self.apple.SetApple()
-            self.apple.ShowApple()
-
-            (snake_dead, self.apple_eaten) = self.snake.ForJade(time_passed, self.apple.GetApplePos(), direction)
+            nextState = self.state.GetNextState(direction)
+            snake_dead = nextState.snake.IsDead()
+            apple_eaten = nextState.IsAppleEaten()
+            print(nextState.snakeMovSpeed)
 
             if snake_dead:
-                self.state = 'over'
-
-            if self.apple_eaten:
+                self.gameOption = 'over'
+            if apple_eaten:
                 self.score += 10
-            self.screen.blit(self.text.render(str(self.score), 1, (255, 255, 255)), (0, 0))
-            d_t = max(d_t, 1)
-            tmp_s = int(100 * self.score / d_t)
-            self.best_s = max(self.best_s, tmp_s)
-            self.screen.blit(self.text.render(str(tmp_s), 1, (255, 255, 255)), (0, 20))
-            self.screen.blit(self.text.render("best score : " + str(self.best_s), 1, (255, 255, 255)), (0, 40))
-        elif self.state == 'cp':
-            direction = self.ai1.GetDirection(time_passed)
+                nextState.IncreaseMovSpeed()
 
-            if self.apple_eaten:
-                self.apple.SetApple()
-                while not IsValidApple(self.apple, self.snake):
-                    self.apple.SetApple()
-            self.apple.ShowApple()
+            self.state = nextState
+            self._DisplayScore()
+            self._DisplayState(self.state)
+        elif self.gameOption == 'cp':
+            nextDirection = self.ai.GetDirection(self.state)
+            nextState = self.state.GetNextState(nextDirection)
+            snake_dead = nextState.snake.IsDead()
+            apple_eaten = nextState.IsAppleEaten()
 
-            (snake_dead, self.apple_eaten) = self.snake.ForJade(time_passed, self.apple.GetApplePos(), direction)
-
-            if self.apple_eaten:
-                self.score += 10
-            self.screen.blit(self.text.render(str(self.score), 1, (255, 255, 255)), (0, 0))
-            d_t = time.time() - self.t_start
-            d_t = max(d_t, 1)
-            tmp_s = int(100 * self.score / d_t)
-            self.best_s = max(self.best_s, tmp_s)
-            self.screen.blit(self.text.render(str(tmp_s), 1, (255, 255, 255)), (0, 20))
-            self.screen.blit(self.text.render("best score : " + str(self.best_s), 1, (255, 255, 255)), (0, 40))
-            #print direction,snake_dead
-            print '========================='
             if snake_dead:
-                self.state = 'over'
-        elif self.state == 'over':
-            # GameOver(screen)
-            self.apple.ShowApple()
-            self.snake.ForJade()
-            self.state = 'over'
+                self.gameOption = 'over'
+            if apple_eaten:
+                self.score += 10
+                nextState.IncreaseMovSpeed()
+
+            self.state = nextState
+            self._DisplayScore()
+            self._DisplayState(self.state)
+        elif self.gameOption == 'over':
+            # self._GameOver()
+            self._DisplayState(self.state)
+            self.gameOption = 'over'
         else:
             print "error in Top Update"
 
+    def Run(self):
+        while True:
+            self.screen.fill((0,0,0))
+            key = None
+            mousePos = None
+            for event in self.pygame.event.get():
+                if event.type == self.pygame.QUIT:
+                    self.pygame.quit()
+                    exit()
+                elif event.type == KEYDOWN:
+                    key = event.key
+                elif event.type == self.pygame.MOUSEBUTTONDOWN:
+                    mousePos = self.pygame.mouse.get_pos()
 
+            self.Update(key, mousePos)
+            self.pygame.display.update()
 
-pygame.init()
-screen = pygame.display.set_mode((SCREEN_WITH, SCREEN_HEIGHT), 0, 32) 
-pygame.display.set_caption("Snake!")
-applePic = pygame.image.load(os.path.join('graph', 'apple.png')).convert()
+    def _DisplayScore(self):
+        d_t = max(time.time() - self.t_start, 1)
+        tmp_s = int(100 * self.score / d_t)
+        self.best_s = max(self.best_s, tmp_s)
+        self.screen.blit(self.text.render(str(tmp_s), 1, (255, 255, 255)), (0, 20))
+        self.screen.blit(self.text.render("best score : " + str(self.best_s), 1, (255, 255, 255)), (0, 40))
+        self.screen.blit(self.text.render(str(self.score), 1, (255, 255, 255)), (0, 0))
 
-snake_zhs = Snake(pygame,screen)
-apple_public = Apple(pygame,screen,applePic)
-top = Top(pygame,screen,snake_zhs,apple_public)
+    def _DisplayState(self, state):
+        # Draw Snake Body
+        SnakeRects = state.snake.GetBodyRects()
+        for i in range(len(SnakeRects)):
+            x1, y1, x2, y2 = SnakeRects[i]
+            rect = (x1, y1, x2 - x1 + 1, y2 - y1 + 1)
+            SnakeRects[i] = rect
 
-clock = pygame.time.Clock()
+        for rect in SnakeRects:
+            self.pygame.draw.rect(self.screen, SNAKE_COLOR, rect)
 
-t0 = clock.tick()
+        # Draw Apple
+        ApplePos = state.apple.GetApplePos()
+        self.screen.blit(self.applePic, ApplePos)
 
-while True:
-    screen.fill((0,0,0))
-    key = None
-    mousePos = None
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pygame.quit()
-            exit()
-        elif event.type == KEYDOWN:
-            key = event.key
-        elif event.type == pygame.MOUSEBUTTONDOWN:
-            mousePos = pygame.mouse.get_pos()
+    # show game over animation using sprite technique
+    def _GameOver(self):
+        try:
+            # load image and scale to fit screen size
+            spritesheet = self.pygame.image.load(os.path.join('graph', 'gameover.png')).convert()
+            spritesheet = self.pygame.transform.scale(spritesheet, (SCREEN_WITH * 24, SCREEN_HEIGHT))
+        except:
+            raise(UserWarning, "Unable to load sprite image file")
 
-    top.Update(clock.tick(30),key,mousePos)
-    pygame.display.update()
+        t = 100
+        for i in range(24):
+            subImage = spritesheet.subsurface(SCREEN_WITH*i,0,SCREEN_WITH,SCREEN_HEIGHT)
 
+            self.screen.blit(subImage, (0,0))
+            self.pygame.time.delay(t)
+            self.pygame.display.update()
 
+snakeGame = Game(pygame)
+snakeGame.Run()
