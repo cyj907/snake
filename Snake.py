@@ -6,10 +6,10 @@
 from Const import *
 
 
-INIT_V = 0.5
+INIT_V = 1
 INIT_DIRECT = 3
 INIT_POS = [10,50,200,50]    #pos定义方式，首末两点的坐标
-INIT_A = 0 #加速度
+INIT_A = 0.25 #加速度
 
 
 class Snake:

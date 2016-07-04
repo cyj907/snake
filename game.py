@@ -112,6 +112,16 @@ class Top:
             self.apple.ShowApple()
 
             (snake_dead, self.apple_eaten) = self.snake.ForJade(time_passed, self.apple.GetApplePos(), direction)
+
+            if self.apple_eaten:
+                self.score += 10
+            self.screen.blit(self.text.render(str(self.score), 1, (255, 255, 255)), (0, 0))
+            d_t = time.time() - self.t_start
+            d_t = max(d_t, 1)
+            tmp_s = int(100 * self.score / d_t)
+            self.best_s = max(self.best_s, tmp_s)
+            self.screen.blit(self.text.render(str(tmp_s), 1, (255, 255, 255)), (0, 20))
+            self.screen.blit(self.text.render("best score : " + str(self.best_s), 1, (255, 255, 255)), (0, 40))
             #print direction,snake_dead
             print '========================='
             if snake_dead:
