@@ -11,7 +11,7 @@ class Snake:
     def __init__(self):
         self.curDir = Direction.East
         self.bodyHalfWidth = SNAKE_WITH_HALH
-        self.body = [(10, 50, 60, 50)]     # line from west to east, from north to south
+        self.body = [(10, 50, 100, 50)]     # line from west to east, from north to south
 
     def _MoveBody(self, d, dec_len=1, inc_len=1):
         # move tail
@@ -101,14 +101,11 @@ class Snake:
                 self.body.append((x2-self.bodyHalfWidth, y2+self.bodyHalfWidth+1,
                                   x2-self.bodyHalfWidth, y2+self.bodyHalfWidth+inc_len+1))
         # change current direction
-        if d != Direction.Stop:
+        if d != Direction.Stop and ReverseDir(d) != self.curDir:
             self.curDir = d
 
     def GoDirection(self, d, dec_len=1, inc_len=1):
         self._MoveBody(d, dec_len, inc_len)
-        print("Direction: ", d)
-        print("Snake: ", self.body)
-        print("Rects: ", self.GetBodyRects())
 
     def Reset(self):
         self.curDir = Direction.East

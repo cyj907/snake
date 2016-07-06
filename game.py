@@ -2,6 +2,7 @@ from State import State
 from Menu import *
 from Direction import Direction
 from AI2 import AI2
+from Astar import AStar
 import os
 
 class Game:
@@ -37,7 +38,8 @@ class Game:
         self.text = pygame.font.Font(None,30)
 
         #self.ai1=AI1(snake,apple)
-        self.ai = AI2()
+        #self.ai = AI2()
+        self.ai = AStar()
 
     def Update(self,key=None,pos=None):
         if self.gameOption == 'menu':
