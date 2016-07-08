@@ -16,16 +16,16 @@ class Snake:
     def _MoveBody(self, d, dec_len=1, inc_len=1):
         # move tail
         x1, y1, x2, y2 = self.body[0]
-        print(x1, y1, x2, y2)
+        #print(x1, y1, x2, y2)
         if x1 == x2:    # vertical
             if y1 >= y2 - 2 * self.bodyHalfWidth:
-                print(self.body.pop(0))
+                self.body.pop(0)
                 i1, j1, i2, j2 = self.body[0]
-                print(self.body[0])
+                #print(self.body[0])
                 if i1 <= x1 - self.bodyHalfWidth: # last piece on the left
-                    self.body[0] = (i1, j1, i2+2*self.bodyHalfWidth, j2)
+                    self.body[0] = (i1, j1, i2+2*self.bodyHalfWidth-dec_len, j2)
                 else:
-                    self.body[0] = (i1-2*self.bodyHalfWidth,j1,i2,j2)
+                    self.body[0] = (i1-2*self.bodyHalfWidth+dec_len,j1,i2,j2)
             elif len(self.body) == 1:   # one segment in body
                 if self.curDir == Direction.North:
                     self.body[0] = (x1, y1, x2, y2-dec_len)
@@ -39,13 +39,13 @@ class Snake:
                     self.body[0] = (x1, y1+dec_len, x2, y2)
         else:   # horizontal
             if y1 == y2 and x1 >= x2 - 2*self.bodyHalfWidth:
-                print(self.body.pop(0))
+                self.body.pop(0)
                 i1, j1, i2, j2 = self.body[0]
-                print(self.body[0])
+                #print(self.body[0])
                 if j1 <= y1 + self.bodyHalfWidth:       # last piece on the top
-                    self.body[0] = (i1, j1, i2, j2 + 2*self.bodyHalfWidth)
+                    self.body[0] = (i1, j1, i2, j2 + 2*self.bodyHalfWidth-dec_len)
                 else:
-                    self.body[0] = (i1, j1-2*self.bodyHalfWidth, i2, j2)
+                    self.body[0] = (i1, j1-2*self.bodyHalfWidth+dec_len, i2, j2)
             elif len(self.body) == 1:    # one segment in body
                 if self.curDir == Direction.West:
                     self.body[0] = (x1, y1, x2-dec_len, y2)
@@ -61,7 +61,7 @@ class Snake:
         # move head
         x1, y1, x2, y2 = self.body[-1]
         # keep the original direction
-        print(d, self.curDir)
+        #print(d, self.curDir)
         if d == self.curDir or d == Direction.Stop or ReverseDir(d) == self.curDir:
             if self.curDir == Direction.West:
                 self.body[-1] = (x1-inc_len, y1, x2, y2)
@@ -112,6 +112,7 @@ class Snake:
         self.body = [(10, 50, 100, 50)]     # line from west to east, from north to south
 
     def GetBodyRects(self):
+        # TODO: 不要重新计算整个身子
         rects = []
         for x1, y1, x2, y2 in self.body:
             if x1 == x2: #   vertical

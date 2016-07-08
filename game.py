@@ -3,6 +3,7 @@ from Menu import *
 from Direction import Direction
 from AI2 import AI2
 from Astar import AStar
+from AIDFS import AIDFS
 import os
 
 class Game:
@@ -13,6 +14,7 @@ class Game:
         self.screen = self.pygame.display.set_mode((SCREEN_WITH, SCREEN_HEIGHT), 0, 32)
         self.pygame.display.set_caption("Snake!")
         self.applePic = self.pygame.image.load(os.path.join('graph', 'apple.png')).convert()
+        self.applePic = self.pygame.transform.scale(self.applePic, (APPLE_WIDTH, APPLE_HEIGHT))
         self.state = State()
         self.clock = pygame.time.Clock()
 
@@ -39,7 +41,7 @@ class Game:
 
         #self.ai1=AI1(snake,apple)
         #self.ai = AI2()
-        self.ai = AStar()
+        self.ai = AIDFS()
 
     def Update(self,key=None,pos=None):
         if self.gameOption == 'menu':
@@ -67,20 +69,21 @@ class Game:
             else:
                 direction = Direction.Stop
 
+            self._DisplayScore()
+            self._DisplayState(self.state)
+
             nextState = self.state.GetNextState(direction)
             snake_dead = nextState.snake.IsDead()
             apple_eaten = nextState.IsAppleEaten()
-            print(nextState.snakeMovSpeed)
 
             if snake_dead:
+                print nextState.snake.GetBodyRects()
                 self.gameOption = 'over'
             if apple_eaten:
                 self.score += 10
                 nextState.IncreaseMovSpeed()
 
             self.state = nextState
-            self._DisplayScore()
-            self._DisplayState(self.state)
         elif self.gameOption == 'cp':
             nextDirection = self.ai.GetDirection(self.state)
             nextState = self.state.GetNextState(nextDirection)
@@ -89,13 +92,20 @@ class Game:
 
             if snake_dead:
                 self.gameOption = 'over'
+                print self.ai.directions
+                print nextState.eatenAppleCount , " eaten"
+                print self.state.IsAppleEaten(), self.state.snake.IsDead()
+                print self.state.apple.GetApplePos(), nextState.apple.GetApplePos()
+                print nextDirection
             if apple_eaten:
-                self.score += 10
+                self.score += 1
                 nextState.IncreaseMovSpeed()
+                State.GenNewApple(nextState)
+                nextState.addedWidth += APPLE_WIDTH
 
-            self.state = nextState
             self._DisplayScore()
-            self._DisplayState(self.state)
+            self._DisplayState(nextState)
+            self.state = nextState
         elif self.gameOption == 'over':
             # self._GameOver()
             self._DisplayState(self.state)

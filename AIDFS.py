@@ -1,66 +1,73 @@
 from Direction import Direction
-from PriorityQueue import PriorityQueue
-from Const import *
+from random import randint
 
-class AStar:
+class AIDFS:
+
     def __init__(self):
         self.directions = []
 
+    def _arange_dirs_(self, state, dirs):
+        elems = []
+        for d in dirs:
+            elems.append((d, self.heuristics(state.GetNextState(d))))
+
+        for i in range(len(elems) - 1):
+            for j in range(len(elems)):
+                if elems[i][1] < elems[j][1]:
+                    tmp = elems[i]
+                    elems[i] = elems[j]
+                    elems[j] = tmp
+
+        res_dirs = []
+        for elem in elems:
+            res_dirs.append(elem[0])
+        return res_dirs
+
     def FindDirections(self, curState):
-        pq = PriorityQueue(["dist", "changeDir"])
-        pq.add({"state": curState, "prev": None, "dist": 0 + self.heuristics(curState), "changeDir": 0, "step": 0})
+        print(curState.apple.GetApplePos())
+        self.directions = []
+        stack = []
+        elem = (curState, None, 0)
+        stack.append(elem)
         cnt = 0
         while True:
-            elem = pq.pop()
-            #print("Dir:", elem["state"].snake.curDir, "step:", elem["step"], "cnt: ", cnt)
-
-            ok_dirs = self._get_ok_dirs_(elem["state"])
-            #print ok_dirs
-            for d in ok_dirs:
-                nextState = elem["state"].GetNextState(d)
-
-                step = elem["step"] + 1
-                changeDir = 0
-                if d != elem["state"].snake.curDir:
-                    changeDir = 1
-                dist = step + self.heuristics(nextState)
-
-                pq.add({"state": nextState, "prev": elem, "dist": dist, "changeDir":changeDir, "step": step} )
-
-            #if elem["step"] % 10 == 0:
-            #    print elem["step"]
-            if pq.IsEmpty():
-                print "EMPTY!!!!", elem["step"]
-                if len(pq.storage) > 0:
-                    elem = pq.storage.pop(0)
-                    pq.add(elem)
-                """
-                while len(pq.storage) > 0:
-                    other = pq.storage.pop()
-                    print other["step"], elem["step"]
-                    if abs(other["step"] - elem["step"]) < elem["step"] * 0.1:
-                        break
-                        """
-                print elem["state"].IsAppleEaten(), elem["state"].apple.GetApplePos()
-                #pq.add(other)
-
+            if len(stack) == 0:
+                self.directions.append(Direction.Stop)
+            elem = stack.pop()
+            state = elem[0]
             cnt += 1
-            if cnt >= 2000 or self._is_goal(elem["state"]) and elem["step"] > 0:
-                #print("step:", elem["step"], "cnt:", cnt, "empty:", pq.IsEmpty())
-                pq.clean()
-                while True:
-                    self.directions.append(elem["state"].snake.curDir)
-                    elem = elem["prev"]
-                    if elem is None:
-                        break
-                self.directions.pop() # remove the first direction (the state that already take a step)
+            if cnt > 500:
+                print curState.snake.GetBodyRects()
+                print curState.apple.GetApplePos()
+                print curState.IsAppleEaten()
+                print "WTF"
+                cntRemoved = randint(int(len(stack) * 0.9), len(stack))
+                if len(stack) - cntRemoved >= 1 and len(stack) > 1:
+                    for i in range(cntRemoved):
+                        stack.pop()
+                print "len of stack", len(stack)
+                cnt = 0
+                continue
 
-                return self.directions
+            if state.IsAppleEaten():
+                print "cnt = ", cnt
+                while elem is not None:
+                    self.directions.append(elem[0].snake.curDir)
+                    elem = elem[1]
+                self.directions.pop()
+                return
 
+            ok_dirs = self._arange_dirs_(state, self._get_ok_dirs_(state))
+
+            for d in ok_dirs:
+                nextState = state.GetNextState(d)
+                nextElem = (nextState, elem)
+
+                stack.append(nextElem)
 
     def GetDirection(self, curState):
         if len(self.directions) == 0:
-            #print ("Find Directions!")
+            print "Find Directions"
             self.FindDirections(curState)
         return self.directions.pop()
 
@@ -191,6 +198,3 @@ class AStar:
             """
 
         return dist
-
-    def _is_goal(self, state):
-        return state.IsAppleEaten()

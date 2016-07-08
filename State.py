@@ -21,9 +21,8 @@ class State:
         return False
 
     def IncreaseMovSpeed(self):
-        if self.eatenAppleCount == 5:
+        if self.eatenAppleCount % 10 == 0 and self.snakeMovSpeed <= SNAKE_WITH_HALH * 2 + 1:
             self.snakeMovSpeed += 1
-            self.eatenAppleCount = 0
 
     def IsAppleEaten(self):
         appleRect = self.apple.getRect()
@@ -32,6 +31,12 @@ class State:
             self.eatenAppleCount += 1
             return True
         return False
+
+    @staticmethod
+    def GenNewApple(state):
+        state.apple.SetApple()
+        while state._IsAppleHitSnake():
+            state.apple.SetApple()
 
     def ResetSnake(self):
         self.snake.Reset()
@@ -48,16 +53,9 @@ class State:
 
     def GetNextState(self, d):
         nextState = copy.deepcopy(self)
-        if nextState.IsAppleEaten():
-            nextState.addedWidth += APPLE_WIDTH
+        if nextState.addedWidth > 0:
             nextState.snake.GoDirection(d, self.snakeMovSpeed, self.snakeMovSpeed+1)
             nextState.addedWidth -= 1
-            nextState.apple.SetApple()
-            while nextState._IsAppleHitSnake():
-                nextState.apple.SetApple()
-        elif nextState.addedWidth > 0:
-            nextState.addedWidth -= 1
-            nextState.snake.GoDirection(d, self.snakeMovSpeed, self.snakeMovSpeed+1)
         else:
             nextState.snake.GoDirection(d, self.snakeMovSpeed, self.snakeMovSpeed)
 
