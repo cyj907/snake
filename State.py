@@ -7,7 +7,7 @@ class State:
         self.snake = Snake()
         self.apple = Apple()
         self.addedWidth = 0
-        self.snakeMovSpeed = 2 # min = 2
+        self.snakeMovSpeed = 2 * SNAKE_WITH_HALH + 1 # min = 2
         self.eatenAppleCount = 0
 
     def _IsAppleHitSnake(self):
@@ -40,7 +40,7 @@ class State:
 
     def ResetSnake(self):
         self.snake.Reset()
-        self.snakeMovSpeed = 2
+        self.snakeMovSpeed = 2 * SNAKE_WITH_HALH + 1
 
     def IsSnakeDead(self, state):
         return state.snake.IsDead()

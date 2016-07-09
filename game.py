@@ -4,6 +4,7 @@ from Direction import Direction
 from AI2 import AI2
 from Astar import AStar
 from AIDFS import AIDFS
+from AIBDFS import AIBDFS
 import os
 
 class Game:
@@ -41,7 +42,8 @@ class Game:
 
         #self.ai1=AI1(snake,apple)
         #self.ai = AI2()
-        self.ai = AIDFS()
+        #self.ai = AIDFS()
+        self.ai = AIBDFS()
 
     def Update(self,key=None,pos=None):
         if self.gameOption == 'menu':
@@ -106,6 +108,8 @@ class Game:
             if apple_eaten:
                 self.score += 1
                 nextState.IncreaseMovSpeed()
+                State.GenNewApple(nextState)
+                nextState.addedWidth += APPLE_WIDTH
 
             self._DisplayScore()
             self._DisplayState(nextState)
