@@ -1,6 +1,7 @@
 from Direction import Direction
 from PriorityQueue import PriorityQueue
 from Const import *
+from random import randint
 
 class AIBDFS:
 
@@ -59,15 +60,19 @@ class AIBDFS:
             stack.append({"state": state, "step": 0, "prev": elem["prev"]})
 
             if cnt >= SCREEN_WITH + SCREEN_HEIGHT - 4 * SNAKE_WITH_HALH - 2:
-                print cnt
+                print "size of queue: ", len(pq.queue)
                 cnt = 0
-                pq.pop()
+                if len(pq.queue) > 1000:
+                    for i in range(1000 - randint(1, 100)):
+                        pq.pop()
                 continue
 
             while len(stack) > 0:
                 el = stack.pop()
                 stat = el["state"]
-                cnt += 1
+                cnt += randint(1, 8)
+                if cnt >= SCREEN_WITH + SCREEN_HEIGHT - 4 * SNAKE_WITH_HALH - 2:
+                    break
 
                 if el["step"] == maxDepth:
                     pq.add({"state": stat, "dist": self.heuristics(stat), "step": el["step"], "prev": el["prev"]})
