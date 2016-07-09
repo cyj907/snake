@@ -78,10 +78,13 @@ class Game:
 
             if snake_dead:
                 print nextState.snake.GetBodyRects()
+                print nextState.snake.body
                 self.gameOption = 'over'
             if apple_eaten:
                 self.score += 10
                 nextState.IncreaseMovSpeed()
+                State.GenNewApple(nextState)
+                nextState.addedWidth += APPLE_WIDTH
 
             self.state = nextState
         elif self.gameOption == 'cp':
@@ -89,6 +92,9 @@ class Game:
             nextState = self.state.GetNextState(nextDirection)
             snake_dead = nextState.snake.IsDead()
             apple_eaten = nextState.IsAppleEaten()
+            if nextState.addedWidth > 0:
+                print nextState.snake.body
+                print "addedWidth = ", nextState.addedWidth
 
             if snake_dead:
                 self.gameOption = 'over'
@@ -100,8 +106,6 @@ class Game:
             if apple_eaten:
                 self.score += 1
                 nextState.IncreaseMovSpeed()
-                State.GenNewApple(nextState)
-                nextState.addedWidth += APPLE_WIDTH
 
             self._DisplayScore()
             self._DisplayState(nextState)

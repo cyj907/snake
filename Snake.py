@@ -13,7 +13,7 @@ class Snake:
         self.bodyHalfWidth = SNAKE_WITH_HALH
         self.body = [(10, 50, 100, 50)]     # line from west to east, from north to south
 
-    def _MoveBody(self, d, dec_len=1, inc_len=1):
+    def _MoveBody(self, d, dec_len, inc_len):
         # move tail
         x1, y1, x2, y2 = self.body[0]
         #print(x1, y1, x2, y2)
@@ -23,9 +23,9 @@ class Snake:
                 i1, j1, i2, j2 = self.body[0]
                 #print(self.body[0])
                 if i1 <= x1 - self.bodyHalfWidth: # last piece on the left
-                    self.body[0] = (i1, j1, i2+2*self.bodyHalfWidth-dec_len, j2)
+                    self.body[0] = (i1, j1, i2+2*self.bodyHalfWidth+1-dec_len, j2)
                 else:
-                    self.body[0] = (i1-2*self.bodyHalfWidth+dec_len,j1,i2,j2)
+                    self.body[0] = (i1-2*self.bodyHalfWidth-1+dec_len,j1,i2,j2)
             elif len(self.body) == 1:   # one segment in body
                 if self.curDir == Direction.North:
                     self.body[0] = (x1, y1, x2, y2-dec_len)
@@ -42,10 +42,10 @@ class Snake:
                 self.body.pop(0)
                 i1, j1, i2, j2 = self.body[0]
                 #print(self.body[0])
-                if j1 <= y1 + self.bodyHalfWidth:       # last piece on the top
-                    self.body[0] = (i1, j1, i2, j2 + 2*self.bodyHalfWidth-dec_len)
+                if j1 <= y1 + self.bodyHalfWidth:      # last piece on the top
+                    self.body[0] = (i1, j1, i2, j2+2*self.bodyHalfWidth+1-dec_len)
                 else:
-                    self.body[0] = (i1, j1-2*self.bodyHalfWidth+dec_len, i2, j2)
+                    self.body[0] = (i1, j1-2*self.bodyHalfWidth-1+dec_len, i2, j2)
             elif len(self.body) == 1:    # one segment in body
                 if self.curDir == Direction.West:
                     self.body[0] = (x1, y1, x2-dec_len, y2)
@@ -74,37 +74,37 @@ class Snake:
         # change direction, add body segment
         elif self.curDir == Direction.North:
             if d == Direction.West:
-                self.body.append((x1-self.bodyHalfWidth-inc_len-1, y1+self.bodyHalfWidth,
+                self.body.append((x1-self.bodyHalfWidth-inc_len, y1+self.bodyHalfWidth,
                                   x1-self.bodyHalfWidth-1, y1+self.bodyHalfWidth))
             elif d == Direction.East:
                 self.body.append((x1+self.bodyHalfWidth+1, y1+self.bodyHalfWidth,
-                                  x1+self.bodyHalfWidth+inc_len+1, y1+self.bodyHalfWidth))
+                                  x1+self.bodyHalfWidth+inc_len, y1+self.bodyHalfWidth))
         elif self.curDir == Direction.South:
             if d == Direction.West:
-                self.body.append((x2-self.bodyHalfWidth-inc_len-1, y2-self.bodyHalfWidth,
+                self.body.append((x2-self.bodyHalfWidth-inc_len, y2-self.bodyHalfWidth,
                                   x2-self.bodyHalfWidth-1, y2-self.bodyHalfWidth))
             elif d == Direction.East:
                 self.body.append((x2+self.bodyHalfWidth+1, y2-self.bodyHalfWidth,
-                                  x2+self.bodyHalfWidth+inc_len+1, y2-self.bodyHalfWidth))
+                                  x2+self.bodyHalfWidth+inc_len, y2-self.bodyHalfWidth))
         elif self.curDir == Direction.West:
             if d == Direction.North:
-                self.body.append((x1+self.bodyHalfWidth, y1-self.bodyHalfWidth-inc_len-1,
+                self.body.append((x1+self.bodyHalfWidth, y1-self.bodyHalfWidth-inc_len,
                                   x1+self.bodyHalfWidth, y1-self.bodyHalfWidth-1))
             elif d == Direction.South:
                 self.body.append((x1+self.bodyHalfWidth, y1+self.bodyHalfWidth+1,
-                                  x1+self.bodyHalfWidth, y1+self.bodyHalfWidth+inc_len+1))
+                                  x1+self.bodyHalfWidth, y1+self.bodyHalfWidth+inc_len))
         elif self.curDir == Direction.East:
             if d == Direction.North:
-                self.body.append((x2-self.bodyHalfWidth, y2-self.bodyHalfWidth-inc_len-1,
+                self.body.append((x2-self.bodyHalfWidth, y2-self.bodyHalfWidth-inc_len,
                                   x2-self.bodyHalfWidth, y2-self.bodyHalfWidth-1))
             elif d == Direction.South:
                 self.body.append((x2-self.bodyHalfWidth, y2+self.bodyHalfWidth+1,
-                                  x2-self.bodyHalfWidth, y2+self.bodyHalfWidth+inc_len+1))
+                                  x2-self.bodyHalfWidth, y2+self.bodyHalfWidth+inc_len))
         # change current direction
         if d != Direction.Stop and ReverseDir(d) != self.curDir:
             self.curDir = d
 
-    def GoDirection(self, d, dec_len=1, inc_len=1):
+    def GoDirection(self, d, dec_len=2, inc_len=2):
         self._MoveBody(d, dec_len, inc_len)
 
     def Reset(self):

@@ -7,7 +7,7 @@ class State:
         self.snake = Snake()
         self.apple = Apple()
         self.addedWidth = 0
-        self.snakeMovSpeed = 1
+        self.snakeMovSpeed = 2 # min = 2
         self.eatenAppleCount = 0
 
     def _IsAppleHitSnake(self):
@@ -40,7 +40,7 @@ class State:
 
     def ResetSnake(self):
         self.snake.Reset()
-        self.snakeMovSpeed = 1
+        self.snakeMovSpeed = 2
 
     def IsSnakeDead(self, state):
         return state.snake.IsDead()
@@ -54,8 +54,13 @@ class State:
     def GetNextState(self, d):
         nextState = copy.deepcopy(self)
         if nextState.addedWidth > 0:
-            nextState.snake.GoDirection(d, self.snakeMovSpeed, self.snakeMovSpeed+1)
-            nextState.addedWidth -= 1
+            reducedWidth = min(nextState.snakeMovSpeed, APPLE_WIDTH)
+            if nextState.addedWidth >= reducedWidth:
+                nextState.snake.GoDirection(d, nextState.snakeMovSpeed, nextState.snakeMovSpeed+reducedWidth)
+                nextState.addedWidth -= reducedWidth
+            else:
+                nextState.snake.GoDirection(d, nextState.addedWidth, nextState.addedWidth)
+                nextState.addedWidth = 0
         else:
             nextState.snake.GoDirection(d, self.snakeMovSpeed, self.snakeMovSpeed)
 

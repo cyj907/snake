@@ -33,10 +33,11 @@ class AIDFS:
         while True:
             if len(stack) == 0:
                 self.directions.append(Direction.Stop)
+                return
             elem = stack.pop()
             state = elem[0]
             cnt += 1
-            if cnt > 500:
+            if cnt > 1000:
                 print curState.snake.GetBodyRects()
                 print curState.apple.GetApplePos()
                 print curState.IsAppleEaten()
