@@ -36,7 +36,14 @@ class AIBDFS:
         steps = bodyLen / state.snakeMovSpeed + 1
         stack = []
         stack.append({"state": state, "depth": 0})
+        cnt = 0
+        maxCnt = SCREEN_HEIGHT*SCREEN_WITH / ((2*SNAKE_WITH_HALH+1)*(2*SNAKE_WITH_HALH+1)) * 2.5 # TODO:old=2
+        #print "max count = ", maxCnt, ", steps = ", steps, ", eaten apple = ", state.eatenAppleCount
         while len(stack) > 0:
+            cnt += 1
+            if cnt > maxCnt:
+                #print ("is possible dead~", cnt)
+                break
             elem = stack.pop()
             if elem["depth"] >= steps:
                 return False
@@ -44,10 +51,10 @@ class AIBDFS:
             ok_dirs = self._get_ok_dirs_(elem["state"])
             for d in ok_dirs:
                 stack.append({"state": elem["state"].GetNextState(d), "depth": elem["depth"]+1})
+
         return True
 
     def FindDirections(self, curState):
-        print(curState.apple.GetApplePos())
         self.directions = []
         pq = PriorityQueue(["dist"])
         maxDepth = 5
@@ -59,27 +66,39 @@ class AIBDFS:
             stack = []
             stack.append({"state": state, "step": 0, "prev": elem["prev"]})
 
+            """
             if cnt >= SCREEN_WITH + SCREEN_HEIGHT - 4 * SNAKE_WITH_HALH - 2:
                 print "size of queue: ", len(pq.queue)
                 cnt = 0
-                if len(pq.queue) > 1000:
-                    for i in range(1000 - randint(1, 100)):
-                        pq.pop()
+            """
+            """
+            maxSize = max(len(pq.queue) / 2, len(pq.queue) - randint(10, 20))
+            reduceSize = min(maxSize, len(pq.queue) - 5)
+            for i in range(reduceSize):
+                pq.pop()
+
+            """
+            if len(pq.queue) > 700:
+                # TODO: if we cannnot find solution for so long a time, the size of queue should
+                # be reduced to a pretty small number
+                for i in range(randint(0,len(pq.queue)-1)):
+                    pq.pop()
+                #print "size of queue: ", len(pq.queue)
+                #print curState.snake.body
+                #print curState.snake.GetBodyRects()
                 continue
 
             while len(stack) > 0:
                 el = stack.pop()
                 stat = el["state"]
-                cnt += randint(1, 8)
-                if cnt >= SCREEN_WITH + SCREEN_HEIGHT - 4 * SNAKE_WITH_HALH - 2:
-                    break
 
-                if el["step"] == maxDepth:
+                if el["step"] >= maxDepth:
                     pq.add({"state": stat, "dist": self.heuristics(stat), "step": el["step"], "prev": el["prev"]})
                     continue
 
                 if stat.IsAppleEaten():
                     # guess if the snake can be dead by instinct
+                    stat.AddSnakeLen()
                     if self._is_possible_dead_(stat):
                         continue
                     while el is not None:
@@ -227,5 +246,57 @@ class AIBDFS:
             elif apple_pos[0] > snake_head[2]:
                 dist += apple_pos[0] - snake_head[2]
             """
+
+        return dist
+
+    def heuristics2(self, state):
+        # TODO: take snake body into consideration
+        # the manhattan distance between snake head and the closest edge of apple
+        apple_pos = state.apple.getRect()
+        snake_x1, snake_y1, snake_x2, snake_y2 = state.snake.rect[-1]
+        snake_dir = state.snake.orientation[-1]
+        dist = 0
+        if snake_dir == Direction.North:
+            if snake_x1 > apple_pos[2]:
+                dist += snake_x1 - apple_pos[2]
+            elif snake_x2 < apple_pos[0]:
+                dist += apple_pos[0] - snake_x2
+
+            # take the body width into consideration
+            if apple_pos[3] < snake_y1:
+                dist += snake_y1 - apple_pos[3]
+            elif apple_pos[1] > snake_y2:
+                dist += apple_pos[1] - snake_y2
+        elif snake_dir == Direction.South:
+            if snake_x1 > apple_pos[2]:
+                dist += snake_x1 - apple_pos[2]
+            elif snake_x2 < apple_pos[0]:
+                dist += apple_pos[0] - snake_x2
+
+            # take the body width into consideration
+            if apple_pos[3] < snake_y1:
+                dist += snake_y1 - apple_pos[3]
+            elif apple_pos[1] > snake_y2:
+                dist += apple_pos[1] - snake_y2
+        elif snake_dir == Direction.West:
+            if snake_y1 > apple_pos[3]:
+                dist += snake_y1 - apple_pos[3]
+            elif snake_y2 < apple_pos[1]:
+                dist += apple_pos[1] - snake_y2
+
+            if apple_pos[2] < snake_x1:
+                dist += snake_x1 - apple_pos[2]
+            elif apple_pos[0] > snake_x2:
+                dist += apple_pos[0] - snake_x2
+        elif snake_dir == Direction.East:
+            if snake_y1 > apple_pos[3]:
+                dist += snake_y1 - apple_pos[3]
+            elif snake_y2 < apple_pos[1]:
+                dist += apple_pos[1] - snake_y2
+
+            if apple_pos[2] < snake_x1:
+                dist += snake_x1 - apple_pos[2]
+            elif apple_pos[0] > snake_x2:
+                dist += apple_pos[0] - snake_x2
 
         return dist

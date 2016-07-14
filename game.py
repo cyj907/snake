@@ -5,6 +5,7 @@ from AI2 import AI2
 from Astar import AStar
 from AIDFS import AIDFS
 from AIBDFS import AIBDFS
+from RL import QState
 import os
 
 class Game:
@@ -44,6 +45,7 @@ class Game:
         #self.ai = AI2()
         #self.ai = AIDFS()
         self.ai = AIBDFS()
+        self.qfunc = QState.QFunc()
 
     def Update(self,key=None,pos=None):
         if self.gameOption == 'menu':
@@ -55,7 +57,8 @@ class Game:
             elif getM=='cp':
                 self.gameOption = 'cp'
             elif getM == 'p1vsp2':
-                pass
+                self.gameOption = 'p1vsp2'
+                self.qfunc.LoadFile("qvalue.txt")
             elif getM == 'quit':
                 self.pygame.quit()
                 exit()
@@ -78,15 +81,18 @@ class Game:
             snake_dead = nextState.snake.IsDead()
             apple_eaten = nextState.IsAppleEaten()
 
+            print "============================"
+            print nextState.snake.GetBodyRects()
+            print nextState.snake.rects
+            print nextState.snake.body
+            print nextState.snake.GetBodyRects2()
             if snake_dead:
-                print nextState.snake.GetBodyRects()
-                print nextState.snake.body
                 self.gameOption = 'over'
             if apple_eaten:
                 self.score += 10
                 nextState.IncreaseMovSpeed()
-                State.GenNewApple(nextState)
-                nextState.addedWidth += APPLE_WIDTH
+                nextState.GenNewApple()
+                nextState.AddSnakeLen()
 
             self.state = nextState
         elif self.gameOption == 'cp':
@@ -94,22 +100,38 @@ class Game:
             nextState = self.state.GetNextState(nextDirection)
             snake_dead = nextState.snake.IsDead()
             apple_eaten = nextState.IsAppleEaten()
-            if nextState.addedWidth > 0:
-                print nextState.snake.body
-                print "addedWidth = ", nextState.addedWidth
 
             if snake_dead:
                 self.gameOption = 'over'
                 print self.ai.directions
                 print nextState.eatenAppleCount , " eaten"
-                print self.state.IsAppleEaten(), self.state.snake.IsDead()
-                print self.state.apple.GetApplePos(), nextState.apple.GetApplePos()
                 print nextDirection
             if apple_eaten:
                 self.score += 1
                 nextState.IncreaseMovSpeed()
-                State.GenNewApple(nextState)
-                nextState.addedWidth += APPLE_WIDTH
+                nextState.GenNewApple()
+                nextState.AddSnakeLen()
+
+            self._DisplayScore()
+            self._DisplayState(nextState)
+            self.state = nextState
+        elif self.gameOption == 'p1vsp2':
+            nextDirection = self.qfunc.GetBestDir(self.state)
+            nextState = self.state.GetNextState(nextDirection)
+            snake_dead = nextState.snake.IsDead()
+            apple_eaten = nextState.IsAppleEaten()
+
+            print nextDirection
+            if snake_dead:
+                self.gameOption = 'over'
+                print nextState.eatenAppleCount, " eaten"
+                print nextDirection
+
+            if apple_eaten:
+                self.score += 1
+                #nextState.IncreaseMovSpeed()
+                nextState.GenNewApple()
+                #nextState.AddSnakeLen()
 
             self._DisplayScore()
             self._DisplayState(nextState)
@@ -120,6 +142,8 @@ class Game:
             self.gameOption = 'over'
         else:
             print "error in Top Update"
+
+        self.clock.tick(1000)
 
     def Run(self):
         while True:

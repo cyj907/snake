@@ -7,8 +7,9 @@ class State:
         self.snake = Snake()
         self.apple = Apple()
         self.addedWidth = 0
-        self.snakeMovSpeed = 2 * SNAKE_WITH_HALH + 1 # min = 2
+        self.snakeMovSpeed = 2*SNAKE_WITH_HALH+1 # min = 2
         self.eatenAppleCount = 0
+        self.GenNewApple()
 
     def _IsAppleHitSnake(self):
         appleRect = self.apple.getRect()
@@ -21,8 +22,9 @@ class State:
         return False
 
     def IncreaseMovSpeed(self):
-        if self.eatenAppleCount % 10 == 0 and self.snakeMovSpeed <= SNAKE_WITH_HALH * 2 + 1:
-            self.snakeMovSpeed += 1
+        if self.eatenAppleCount % 10 == 0:
+            #self.snakeMovSpeed += 2*SNAKE_WITH_HALH+1
+            pass
 
     def IsAppleEaten(self):
         appleRect = self.apple.getRect()
@@ -32,15 +34,17 @@ class State:
             return True
         return False
 
-    @staticmethod
-    def GenNewApple(state):
-        state.apple.SetApple()
-        while state._IsAppleHitSnake():
-            state.apple.SetApple()
+    def GenNewApple(self):
+        self.apple.SetApple()
+        while self._IsAppleHitSnake():
+            self.apple.SetApple()
+
+    def AddSnakeLen(self):
+        self.addedWidth += APPLE_WIDTH
 
     def ResetSnake(self):
         self.snake.Reset()
-        self.snakeMovSpeed = 2 * SNAKE_WITH_HALH + 1
+        self.snakeMovSpeed = 2*SNAKE_WITH_HALH+1
 
     def IsSnakeDead(self, state):
         return state.snake.IsDead()
@@ -54,13 +58,8 @@ class State:
     def GetNextState(self, d):
         nextState = copy.deepcopy(self)
         if nextState.addedWidth > 0:
-            reducedWidth = min(nextState.snakeMovSpeed, APPLE_WIDTH)
-            if nextState.addedWidth >= reducedWidth:
-                nextState.snake.GoDirection(d, nextState.snakeMovSpeed, nextState.snakeMovSpeed+reducedWidth)
-                nextState.addedWidth -= reducedWidth
-            else:
-                nextState.snake.GoDirection(d, nextState.addedWidth, nextState.addedWidth)
-                nextState.addedWidth = 0
+            nextState.snake.GoDirection(d, nextState.snakeMovSpeed, nextState.snakeMovSpeed+nextState.addedWidth)
+            nextState.addedWidth = 0
         else:
             nextState.snake.GoDirection(d, self.snakeMovSpeed, self.snakeMovSpeed)
 

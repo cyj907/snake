@@ -10,13 +10,15 @@ import copy
 APPLE_COLOR=(255,0,0) #�����ú�ɫ�İ�
 SNAKE_COLOR=(0,255,100) #��ϲ��ӫ���̵���
 
-SCREEN_WITH=250
-SCREEN_HEIGHT=250
+APPLE_WIDTH=21
+APPLE_HEIGHT=21
 
-APPLE_WIDTH=10
-APPLE_HEIGHT=10
+Grid_X = 10
+Grid_Y = 10
+SCREEN_WITH=APPLE_WIDTH * Grid_X
+SCREEN_HEIGHT=APPLE_HEIGHT * Grid_Y
 
-SNAKE_WITH_HALH = 5
+SNAKE_WITH_HALH = 10
 
 def FindIntersectRect(rect1, rect2):
     left = max(rect1[0],rect2[0])
