@@ -117,7 +117,22 @@ class Game:
             self.state = nextState
         elif self.gameOption == 'p1vsp2':
             nextDirection = self.qfunc.GetBestDir(self.state)
-            nextState = self.state.GetNextState(nextDirection)
+            nextState = self.qfunc.UpdateQValue(self.state,nextDirection)
+            if nextState == None:
+                print self.state.eatenAppleCount, " eaten"
+                print nextDirection
+                self.score = 0
+                self.state = State()
+                return
+
+            apple_eaten = nextState.IsAppleEaten()
+            if apple_eaten:
+                self.score += 1
+                #nextState.IncreaseMovSpeed()
+                nextState.GenNewApple()
+                #nextState.AddSnakeLen()
+
+            """
             snake_dead = nextState.snake.IsDead()
             apple_eaten = nextState.IsAppleEaten()
 
@@ -132,7 +147,7 @@ class Game:
                 #nextState.IncreaseMovSpeed()
                 nextState.GenNewApple()
                 #nextState.AddSnakeLen()
-
+            """
             self._DisplayScore()
             self._DisplayState(nextState)
             self.state = nextState
@@ -143,24 +158,28 @@ class Game:
         else:
             print "error in Top Update"
 
-        self.clock.tick(1000)
 
     def Run(self):
         while True:
-            self.screen.fill((0,0,0))
-            key = None
-            mousePos = None
-            for event in self.pygame.event.get():
-                if event.type == self.pygame.QUIT:
-                    self.pygame.quit()
-                    exit()
-                elif event.type == KEYDOWN:
-                    key = event.key
-                elif event.type == self.pygame.MOUSEBUTTONDOWN:
-                    mousePos = self.pygame.mouse.get_pos()
+            try:
+                self.screen.fill((0,0,0))
+                key = None
+                mousePos = None
+                for event in self.pygame.event.get():
+                    if event.type == self.pygame.QUIT:
+                        self.pygame.quit()
+                        exit()
+                    elif event.type == KEYDOWN:
+                        key = event.key
+                    elif event.type == self.pygame.MOUSEBUTTONDOWN:
+                        mousePos = self.pygame.mouse.get_pos()
 
-            self.Update(key, mousePos)
-            self.pygame.display.update()
+                self.clock.tick(50)
+                self.Update(key, mousePos)
+                self.pygame.display.update()
+            except KeyboardInterrupt:
+                self.qfunc.Save2File("qvalue.txt")
+                break
 
     def _DisplayScore(self):
         d_t = max(time.time() - self.t_start, 1)

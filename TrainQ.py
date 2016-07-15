@@ -9,22 +9,23 @@ def TrainQ():
     qfunc = QState.QFunc()
 
     qfunc.LoadFile("qvalue.txt")
-    maxIter = 1000000
     curIter = 0
-    while curIter < maxIter:
-        state = State()
-        curIter += 1
-        print(curIter)
+    while True:
+        try:
+            state = State()
+            curIter += 1
+            print(curIter)
 
-        while True:
-            id = randint(0,3)
-            d = directions[id]
-            nextState = qfunc.UpdateQValue(state, d)
-            if nextState == None:
-                break
-            state = nextState
-
-    qfunc.Save2File("qvalue.txt")
+            while True:
+                id = randint(0,3)
+                d = directions[id]
+                nextState = qfunc.UpdateQValue(state, d)
+                if nextState == None:
+                    break
+                state = nextState
+        except KeyboardInterrupt:
+            qfunc.Save2File("qvalue.txt")
+            break
 
 
 TrainQ()

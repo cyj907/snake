@@ -1,13 +1,14 @@
 from collections import defaultdict
 from Direction import Direction
 from Const import *
+from random import randint
 
 
 class QFunc:
     def __init__(self):
         self.QMat = defaultdict(float)
-        self.learning_rate = 0.6
-        self.discount = 0.9
+        self.learning_rate = 0.9
+        self.discount = 0.7
 
     def ExtractQState(self, state):
         snake = state.snake
@@ -188,11 +189,12 @@ class QFunc:
     def GetBestDir(self, state):
         qstate = self.ExtractQState(state)
         s_qstate = self.qstate2str(qstate)
+        directions = [Direction.North, Direction.South, Direction.West, Direction.East]
         best_q = -100
-        best_a = Direction.North
-        for a in [Direction.North, Direction.South, Direction.West, Direction.East]:
+        best_a = directions[randint(0,3)]
+        for a in directions:
             q = self.QMat.get((s_qstate, a),0)
-            print q
+            #print q
             if q > best_q:
                 best_a = a
                 best_q = q
