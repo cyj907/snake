@@ -58,7 +58,7 @@ class State:
     def GetNextState(self, d):
         nextState = copy.deepcopy(self)
         if nextState.addedWidth > 0:
-            nextState.snake.GoDirection(d, nextState.snakeMovSpeed, nextState.snakeMovSpeed+nextState.addedWidth)
+            nextState.snake.GoDirection(d, nextState.snakeMovSpeed-nextState.addedWidth, nextState.snakeMovSpeed)
             nextState.addedWidth = 0
         else:
             nextState.snake.GoDirection(d, self.snakeMovSpeed, self.snakeMovSpeed)

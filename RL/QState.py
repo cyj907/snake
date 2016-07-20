@@ -7,7 +7,7 @@ from random import randint
 class QFunc:
     def __init__(self):
         self.QMat = defaultdict(float)
-        self.learning_rate = 0.9
+        self.learning_rate = 0.1
         self.discount = 0.7
 
     def ExtractQState(self, state):

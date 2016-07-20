@@ -174,7 +174,7 @@ class Game:
                     elif event.type == self.pygame.MOUSEBUTTONDOWN:
                         mousePos = self.pygame.mouse.get_pos()
 
-                self.clock.tick(50)
+                self.clock.tick(10000)
                 self.Update(key, mousePos)
                 self.pygame.display.update()
             except KeyboardInterrupt:

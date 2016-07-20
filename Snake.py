@@ -5,13 +5,17 @@
 
 from Const import *
 from Direction import Direction, ReverseDir
+from random import randint
 
 
 class Snake:
     def __init__(self):
         self.curDir = Direction.East
         self.bodyHalfWidth = SNAKE_WITH_HALH
-        self.body = [(0, self.bodyHalfWidth, APPLE_WIDTH*6-1, self.bodyHalfWidth)]     # line from west to east, from north to south
+        self.initLen = 3
+        x = randint(0, Grid_X-1-self.initLen)
+        y = randint(0, Grid_Y-1)
+        self.body = [(x*APPLE_WIDTH, y*APPLE_HEIGHT+self.bodyHalfWidth, APPLE_WIDTH*(self.initLen+x)-1, y*APPLE_HEIGHT+self.bodyHalfWidth)]     # line from west to east, from north to south
         self.rects = [(0, 0, APPLE_WIDTH*6-1, APPLE_WIDTH-1)]
         self.orientation = [Direction.East]
 
@@ -230,7 +234,11 @@ class Snake:
         #self.body = [(10, 50, 100, 50)]     # line from west to east, from north to south
         self.orientation = [Direction.East]
         #self.rects = [(10, 50-self.bodyHalfWidth, 100, 50+self.bodyHalfWidth)]
-        self.body = [(0, self.bodyHalfWidth, APPLE_WIDTH*6-1, self.bodyHalfWidth)]     # line from west to east, from north to south
+        x = randint(0, Grid_X-1-self.initLen)
+        y = randint(0, Grid_Y-1)
+        self.body = [(x*APPLE_WIDTH, y*APPLE_HEIGHT+self.bodyHalfWidth, APPLE_WIDTH*(self.initLen+x)-1, y*APPLE_HEIGHT+self.bodyHalfWidth)]     # line from west to east, from north to south
+        self.rects = [(0, 0, APPLE_WIDTH*6-1, APPLE_WIDTH-1)]
+        #self.body = [(0, self.bodyHalfWidth, APPLE_WIDTH*6-1, self.bodyHalfWidth)]     # line from west to east, from north to south
         self.rects = [(0, 0, APPLE_WIDTH*6-1, APPLE_WIDTH-1)]
 
     def GetBodyRects2(self):
