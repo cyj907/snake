@@ -6,6 +6,7 @@ from Astar import AStar
 from AIDFS import AIDFS
 from AIBDFS import AIBDFS
 from RL import QState
+from RL import QState2
 import os
 
 class Game:
@@ -45,7 +46,7 @@ class Game:
         #self.ai = AI2()
         #self.ai = AIDFS()
         self.ai = AIBDFS()
-        self.qfunc = QState.QFunc()
+        self.qfunc = QState2.QFunc()
 
     def Update(self,key=None,pos=None):
         if self.gameOption == 'menu':
@@ -130,7 +131,7 @@ class Game:
                 self.score += 1
                 #nextState.IncreaseMovSpeed()
                 nextState.GenNewApple()
-                #nextState.AddSnakeLen()
+                nextState.AddSnakeLen()
 
             """
             snake_dead = nextState.snake.IsDead()
@@ -167,6 +168,7 @@ class Game:
                 mousePos = None
                 for event in self.pygame.event.get():
                     if event.type == self.pygame.QUIT:
+                        self.qfunc.Save2File("qvalue.txt")
                         self.pygame.quit()
                         exit()
                     elif event.type == KEYDOWN:
@@ -174,7 +176,7 @@ class Game:
                     elif event.type == self.pygame.MOUSEBUTTONDOWN:
                         mousePos = self.pygame.mouse.get_pos()
 
-                self.clock.tick(10000)
+                self.clock.tick(10)
                 self.Update(key, mousePos)
                 self.pygame.display.update()
             except KeyboardInterrupt:
